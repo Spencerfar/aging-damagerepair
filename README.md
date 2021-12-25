@@ -1,7 +1,7 @@
 # Damage and repair processes in aging
 
 <p align="center"> 
-<img src="transitions_schematic_combined.png" width="800" height="343">
+<img src="transitions_schematic_combined.png" width="799" height="343">
 </p>
 
 # Documentation
