@@ -1,9 +1,10 @@
 # Damage and repair processes in aging
-
+Instead of simply measuring the health state as the count of binary health deficits as in a Frailty Index, we estimate damage and repair processes.
 
 <p align="center"> 
 <img src="diagrams/transitions_schematic_combined.png" width="799" height="343">
 </p>
+
 
 # Documentation
 A python package to extract counts of damaged and repaired binary health variables between longitudinal time-points (as in the above schematic) is available in damagerepair-counts/.
