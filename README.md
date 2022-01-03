@@ -1,7 +1,8 @@
 # Damage and repair processes in aging
 
+
 <p align="center"> 
-<img src="transitions_schematic_combined.png" width="799" height="343">
+<img src="diagrams/transitions_schematic_combined.png" width="799" height="343">
 </p>
 
 # Documentation
@@ -16,7 +17,7 @@ Three different mice datasets are used, from https://doi.org/10.1093/gerona/gly2
 
 Human data from the English Longitudinal Study of Aging are used, which can be accessed here https://www.elsa-project.ac.uk/accessing-elsa-data by registering. We use waves 1-9.
 
-The code used to clean and pre-process these datasets is avaible in clean_datasets/.
+The code used to clean and pre-process these datasets is available in clean_datasets/.
 
 # Citation
 Please cite the preprint if you find this work useful ().
