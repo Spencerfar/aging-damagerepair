@@ -21,14 +21,4 @@ Human data from the English Longitudinal Study of Aging are used, which can be a
 The code used to clean and pre-process these datasets is available in clean_datasets/.
 
 # Citation
-Please cite the preprint if you find this work useful ().
-```
-@misc{farrell2021,
-      title={}, 
-      author={Spencer Farrell},
-      year={2021},
-      eprint={},
-      archivePrefix={},
-      primaryClass={}
-}
-```
+Pre-print out soon.
