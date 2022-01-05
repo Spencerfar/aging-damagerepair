@@ -37,7 +37,7 @@ f.mean <- mean(elsa$f)
 f.sd <- sd(elsa$f)
 
 # create text for significance
-labels <- c('', '','$p<0.05$ for age$>73$', '$p<0.05$ for age$<97$', '','','','$p<0.05$ for age$<92$')
+labels <- c('', '','', '$p<0.05$ for age$<97$', '','','$p<0.05$ for age$>70$','$p<0.05$ for age$<95$')
 xs <- c(55, 55, 75, 85, 55,55, 75,85)
 human.text <- data.frame(baseline.bin=c('Baseline age: [50,60)','[60,70)','[70,80)','[80,90)', 'Baseline age: [50,60)','[60,70)','[70,80)','[80,90)'),sex=c('Female', 'Female', 'Female', 'Female', 'Male', 'Male','Male','Male'), label = labels, x= xs)
 human.text$baseline.bin <- factor(human.text$baseline.bin, levels=c('Baseline age: [50,60)','[60,70)','[70,80)','[80,90)'))
@@ -70,7 +70,7 @@ terms <- fit %>%
     ungroup() %>%
     as.data.frame()
 
-levels(curv.plot.terms.control$baseline.bin) <- c('Baseline age: [50,60)','[60,70)','[70,80)','[80,90)')
+levels(terms$baseline.bin) <- c('Baseline age: [50,60)','[60,70)','[70,80)','[80,90)')
 
 plot.terms <- ggplot() +
     geom_hline(yintercept = 0, linetype="dotted") +
