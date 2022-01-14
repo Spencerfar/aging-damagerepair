@@ -4,12 +4,8 @@ library(ggplot2)
 library(ggsci)
 library(gridExtra)
 library(survival)
-library(bayesplot)
-library(bayestestR)
 library(tidybayes)
 library(latex2exp)
-library(ggpubr)
-library(ggsignif)
 library(cowplot)
 source("../utils/functions.r")
 source("../utils/palettes.r")
@@ -42,29 +38,31 @@ bins <- seq(20, 105, by=3)
 fit <- as_draws_df(readRDS("../fits/long_human_fit.RDS")$draws(c("lambda_r", "lambda_d")))
 
 baseline.bins <- seq(50, 90, by=4)
-binned.age <- cut(elsa.test$age, bins, include.lowest=TRUE)
+binned.age <- cut(elsa$age, bins, include.lowest=TRUE)
 binned.age <- midpoints(binned.age)+1.5
 
 repair.wealth.corr.med <- fit %>%
     spread_draws(lambda_r[n], n = 100) %>%
     group_by(.draw) %>%
-    mutate(sex = elsa.test[n, 'sex']$sex) %>%
-    mutate(id = elsa.test[n, 'id']$id) %>%
+    mutate(sex = elsa[n, 'sex']$sex) %>%
+    mutate(id = elsa[n, 'id']$id) %>%
     mutate(age = binned.age[n]) %>%
-    mutate(wealth = elsa.test[n, 'wealth']$wealth) %>%
-    mutate(baseline.bin = elsa.test[n,'baseline.bin']$baseline.bin) %>%
-    mutate(num = elsa.test[n,'n']) %>%
-    filter(num > 0) %>%
+    mutate(wealth = elsa[n, 'wealth']$wealth) %>%
+    mutate(baseline.bin = elsa[n,'baseline.bin']$baseline.bin) %>%
+    filter(elsa[n,'n'] > 0) %>%
     ungroup() %>%
     group_by(id, sex, age, baseline.bin, .draw) %>%
     summarize(lambda_r = mean(lambda_r, na.rm=TRUE),
               wealth = mean(wealth)) %>%
     ungroup() %>%
     group_by(sex, age, baseline.bin, .draw) %>%
+    filter(length(id) >= 3) %>%
     summarize(corr_r = cor(wealth, lambda_r, method="spearman")) %>%
     ungroup() %>%
     group_by(sex, age, baseline.bin) %>%
     median_hdci(corr_r, .width=0.95)
+
+repair.wealth.corr.med %>%as.data.frame()
 
 repair.corr.plot <- ggplot() +
     geom_lineribbon(data = repair.wealth.corr.med, mapping = aes(x = age, y = corr_r, ymin = .lower, ymax=.upper),
@@ -92,19 +90,21 @@ gc()
 
 
 damage.wealth.corr.med <- fit %>%
-    spread_draws(lambda_d[n], n = 100) %>%
+    spread_draws(lambda_d[n]) %>%
     group_by(.draw) %>%
-    mutate(sex = elsa.test[n, 'sex']$sex) %>%
-    mutate(id = elsa.test[n, 'id']$id) %>%
-    mutate(wealth = elsa.test[n, 'wealth']$wealth) %>%
+    mutate(sex = elsa[n, 'sex']$sex) %>%
+    mutate(id = elsa[n, 'id']$id) %>%
+    mutate(wealth = elsa[n, 'wealth']$wealth) %>%
     mutate(age = binned.age[n]) %>%    
-    mutate(baseline.bin = elsa.test[n,'baseline.bin']$baseline.bin) %>%
+    mutate(baseline.bin = elsa[n,'baseline.bin']$baseline.bin) %>%
+    filter(elsa[n,'n'] > 0) %>%
     ungroup() %>%
     group_by(id, sex, age, baseline.bin, .draw) %>%
     summarize(lambda_d = mean(lambda_d, na.rm=TRUE),
               wealth = mean(wealth)) %>%
     ungroup() %>%
     group_by(sex, age, baseline.bin, .draw) %>%
+    filter(length(id) >= 3) %>%
     summarize(corr_d = cor(wealth, lambda_d, method="spearman")) %>%
     ungroup() %>%
     group_by(sex, age, baseline.bin) %>%

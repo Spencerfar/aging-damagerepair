@@ -3,12 +3,8 @@ library(ggplot2)
 library(ggsci)
 library(gridExtra)
 library(survival)
-library(bayesplot)
-library(bayestestR)
 library(tidybayes)
 library(latex2exp)
-library(ggpubr)
-library(ggsignif)
 library(tidyr)
 library(cowplot)
 source("../utils/functions.r")
@@ -40,7 +36,7 @@ binned.test <- cut(enalapril.test$time, bins, include.lowest = TRUE)
 binned.test <- midpoints(binned.test)
 
 
-full.repair.plot.stats <- fit %>%
+full.repair.plot.stats.median <- fit %>%
     spread_draws(lambda_r[n], lambda_d[n], deriv_r[n], deriv_r_f[n]) %>%
     group_by(.iteration, .chain) %>%
     mutate(sex = enalapril.test[n, 'sex']) %>%
@@ -58,7 +54,7 @@ full.repair.plot.stats <- fit %>%
     group_by(sex, treatment, age) %>%
     median_hdci(lambda_r, .width=0.95)
 
-full.damage.plot.stats <- fit %>%
+full.damage.plot.stats.median <- fit %>%
     spread_draws(lambda_r[n], lambda_d[n], deriv_d[n], deriv_d_f[n]) %>%
     group_by(.iteration, .chain) %>%
     mutate(sex = enalapril.test[n, 'sex']) %>%
@@ -77,13 +73,63 @@ full.damage.plot.stats <- fit %>%
     median_hdci(lambda_d, .width=0.95)
 
 
+full.repair.plot.stats <- fit %>%
+    spread_draws(lambda_r[n], lambda_d[n], deriv_r[n], deriv_d[n], deriv_r_f[n], deriv_d_f[n]) %>%
+    group_by(.iteration, .chain) %>%
+    mutate(sex = enalapril.test[n, 'sex']) %>%
+    mutate(treatment = enalapril.test[n, 'treatment']) %>%
+    mutate(mouse = enalapril.test[n,'mouse']) %>%
+    mutate(age = binned.test[n]) %>%
+    mutate(f = enalapril.test[n,'f']) %>%
+    mutate(deriv_r_f = deriv_r_f * f.sd) %>%
+    mutate(deriv_d_f = deriv_d_f * f.sd) %>%
+    mutate(dotf = (1 - f)*lambda_d - f*lambda_r )  %>%
+    mutate(deriv_rr = deriv_r + dotf*deriv_r_f)  %>%
+    ungroup() %>%
+    group_by(sex, treatment, age, .draw) %>%
+    summarize(lambda_r = mean(lambda_r), deriv_r = mean(deriv_rr)) %>%
+    ungroup() %>% filter(age <= 8.5) %>% as.data.frame()
+
+
+full.damage.plot.stats <- fit %>%
+    spread_draws(lambda_r[n], lambda_d[n], deriv_r[n], deriv_d[n], deriv_r_f[n], deriv_d_f[n]) %>%
+    group_by(.iteration, .chain) %>%
+    mutate(sex = enalapril.test[n, 'sex']) %>%
+    mutate(treatment = enalapril.test[n, 'treatment']) %>%
+    mutate(mouse = enalapril.test[n,'mouse']) %>%
+    mutate(age = binned.test[n]) %>%
+    mutate(deriv_r_f = deriv_r_f * f.sd) %>%
+    mutate(deriv_d_f = deriv_d_f * f.sd) %>%
+    mutate(f = enalapril.test[n,'f']) %>%
+    mutate(dotf = (1 - f)*lambda_d - f*lambda_r )  %>%
+    mutate(deriv_dd = deriv_d + dotf*deriv_d_f) %>%
+    ungroup() %>%
+    group_by(sex, treatment, age, .draw) %>%
+    summarize(lambda_d = mean(lambda_d), deriv_d = mean(deriv_dd)) %>%
+    ungroup() %>% filter(age <= 8.5) %>% as.data.frame()
+
+
+repair.diff.deriv.stats <- full.repair.plot.stats[full.repair.plot.stats$treatment == 'Control',]
+repair.diff.deriv.stats$diff <- full.repair.plot.stats[full.repair.plot.stats$treatment == 'Enalapril',]$deriv_r - full.repair.plot.stats[full.repair.plot.stats$treatment == 'Control',]$deriv_r
+repair.diff.deriv.stats <- repair.diff.deriv.stats %>% group_by(sex, treatment, age) %>% median_hdci(diff, .width=0.95) %>%
+    mutate(significance = ifelse(.lower >= 0, '*', ''))
+repair.diff.deriv.stats$y <- -0.1#full.repair.plot.stats.median[full.repair.plot.stats.median$treatment=='Control',]$.upper + 0.4
+
+damage.diff.deriv.stats <- full.damage.plot.stats[full.damage.plot.stats$treatment == 'Control',]
+damage.diff.deriv.stats$diff <- full.damage.plot.stats[full.damage.plot.stats$treatment == 'Enalapril',]$deriv_d - full.damage.plot.stats[full.damage.plot.stats$treatment == 'Control',]$deriv_d
+damage.diff.deriv.stats <- damage.diff.deriv.stats %>% group_by(sex, treatment, age) %>% median_hdci(diff, .width=0.95) %>%
+    mutate(significance = ifelse(.upper <= 0, '*', ''))
+damage.diff.deriv.stats$y <- 0.83#full.repair.plot.stats.median[full.repair.plot.stats.median$treatment=='Control',]$.upper + 0.4
+damage.diff.deriv.stats[damage.diff.deriv.stats$sex == 'M',]$y <- 0.45#full.repair.plot.stats.median[full.repair.plot.stats.median$treatment=='Control',]$.upper + 0.4
+
+
 enalapril.repair <- ggplot() +
-    geom_lineribbon(data=full.repair.plot.stats, mapping=aes(x=age, y=lambda_r, fill=treatment,
-                                                             color=NA, ymin=.lower, ymax=.upper), alpha=0.5) +
-    geom_line(data=full.repair.plot.stats, mapping=aes(x=age, y=lambda_r,
-          fill=treatment, color=treatment,group=treatment), alpha=1, size=1.75, color='white') +
-    geom_line(data=full.repair.plot.stats, mapping=aes(x=age, y=lambda_r,
-         fill=treatment, color=treatment, group=treatment), alpha=1, size=1.25)+
+    geom_errorbar(data=full.repair.plot.stats.median, mapping=aes(x=age, y=lambda_r, fill=treatment,
+                                                             color=treatment, ymin=.lower, ymax=.upper), alpha=1.0, width=0.5) +
+    #geom_line(data=full.repair.plot.stats.median, mapping=aes(x=age, y=lambda_r,
+    #      fill=treatment, color=treatment,group=treatment), alpha=1, size=1.75, color='white') +
+    geom_point(data=full.repair.plot.stats.median, mapping=aes(x=age, y=lambda_r,
+         fill=treatment, color=treatment, group=treatment), alpha=1)+
     geom_hline(yintercept = 0, linetype="dotted") +
     theme_cowplot() + theme(
         strip.background = element_blank(),
@@ -99,17 +145,17 @@ enalapril.repair <- ggplot() +
     labs(y='Repair rate time slope', x='Time since intervention (months)',
          color='', fill='') +
     scale_fill_d3() +
-    scale_color_d3() + ggtitle('c) Mouse dataset 1 (Keller et al. 2019)')
-
+    scale_color_d3() + ggtitle('c) Mouse dataset 1 (Keller et al. 2019)') +
+    geom_text(data = repair.diff.deriv.stats,mapping = aes(x=age, y = y, label = significance), size=4)
 
 
 enalapril.damage <- ggplot() +
-    geom_lineribbon(data=full.damage.plot.stats, mapping=aes(x=age, y=lambda_d, fill=treatment,
-                                                             color=NA, ymin=.lower, ymax=.upper), alpha=0.5) +
-    geom_line(data=full.damage.plot.stats, mapping=aes(x=age, y=lambda_d,
-          fill=treatment, color=treatment,group=treatment), alpha=1, size=1.75, color='white') +
-    geom_line(data=full.damage.plot.stats, mapping=aes(x=age, y=lambda_d,
-         fill=treatment, color=treatment, group=treatment), alpha=1, size=1.25)+
+    geom_errorbar(data=full.damage.plot.stats.median, mapping=aes(x=age, y=lambda_d, fill=treatment,
+                                                             color=treatment, ymin=.lower, ymax=.upper), alpha=1.0, width=0.5) +
+    #geom_line(data=full.damage.plot.stats.median, mapping=aes(x=age, y=lambda_d,
+    #      fill=treatment, color=treatment,group=treatment), alpha=1, size=1.75, color='white') +
+    geom_point(data=full.damage.plot.stats.median, mapping=aes(x=age, y=lambda_d,
+         fill=treatment, color=treatment, group=treatment), alpha=1)+
     geom_hline(yintercept = 0, linetype="dotted") +
     theme_cowplot() + theme(
         strip.background = element_blank(),
@@ -125,7 +171,8 @@ enalapril.damage <- ggplot() +
     labs(y='Damage rate time slope', x='Time since intervention (months)',
          color='', fill='') +
     scale_fill_d3() +
-    scale_color_d3() + xlim(0, 10.25)
+    scale_color_d3() + xlim(0, 10.25) +
+    geom_text(data = damage.diff.deriv.stats,mapping = aes(x=age, y = y, label = significance), size=4)
 
 
 
@@ -161,7 +208,7 @@ binned.test <- cut(exercise.test$time, bins, include.lowest = TRUE)
 binned.test <- midpoints(binned.test)
 
 
-full.repair.plot.stats <- fit %>%
+full.repair.plot.stats.median <- fit %>%
     spread_draws(lambda_r[n], lambda_d[n], deriv_r[n], deriv_r_f[n]) %>%
     group_by(.iteration, .chain) %>%
     mutate(sex = exercise.test[n, 'sex']) %>%
@@ -180,7 +227,7 @@ full.repair.plot.stats <- fit %>%
     median_hdci(lambda_r, .width=0.95)
 
 
-full.damage.plot.stats <- fit %>%
+full.damage.plot.stats.median <- fit %>%
     spread_draws(lambda_r[n], lambda_d[n], deriv_d[n],deriv_d_f[n]) %>%
     group_by(.iteration, .chain) %>%
     mutate(sex = exercise.test[n, 'sex']) %>%
@@ -201,14 +248,63 @@ full.damage.plot.stats <- fit %>%
 
 
 
+full.repair.plot.stats <- fit %>%
+    spread_draws(lambda_r[n], lambda_d[n], deriv_r[n], deriv_d[n], deriv_r_f[n], deriv_d_f[n]) %>%
+    group_by(.iteration, .chain) %>%
+    mutate(sex = exercise.test[n, 'sex']) %>%
+    mutate(exercise = exercise.test[n, 'exercise']) %>%
+    mutate(mouse = exercise.test[n,'mouse']) %>%
+    mutate(f = exercise.test[n,'f']) %>%
+    mutate(deriv_r_f = deriv_r_f * f.sd) %>%
+    mutate(deriv_d_f = deriv_d_f * f.sd) %>%
+    mutate(age = binned.test[n]) %>%
+    mutate(dotf = (1 - f)*lambda_d - f*lambda_r )  %>%
+    mutate(deriv_rr = deriv_r + dotf*deriv_r_f)  %>%
+    ungroup() %>%
+    group_by(sex, exercise, age, .draw) %>%
+    summarize(lambda_r = mean(lambda_r), deriv_r = mean(deriv_rr)) %>%
+    ungroup()
+
+
+full.damage.plot.stats <- fit %>%
+    spread_draws(lambda_r[n], lambda_d[n], deriv_r[n], deriv_d[n], deriv_r_f[n], deriv_d_f[n]) %>%
+    group_by(.iteration, .chain) %>%
+    mutate(sex = exercise.test[n, 'sex']) %>%
+    mutate(exercise = exercise.test[n, 'exercise']) %>%
+    mutate(mouse = exercise.test[n,'mouse']) %>%
+    mutate(f = exercise.test[n,'f']) %>%
+    mutate(deriv_r_f = deriv_r_f * f.sd) %>%
+    mutate(deriv_d_f = deriv_d_f * f.sd) %>%
+    mutate(age = binned.test[n]) %>%
+    mutate(dotf = (1 - f)*lambda_d - f*lambda_r )  %>%
+    mutate(deriv_dd = deriv_d + dotf*deriv_d_f)  %>%
+    ungroup() %>%
+    group_by(sex, exercise, age, .draw) %>%
+    summarize(lambda_d = mean(lambda_d), deriv_d = mean(deriv_dd)) %>%
+    ungroup()
+
+repair.diff.deriv.stats <- full.repair.plot.stats[full.repair.plot.stats$exercise == 'Control',]
+repair.diff.deriv.stats$diff <- full.repair.plot.stats[full.repair.plot.stats$exercise == 'Exercise',]$deriv_r - full.repair.plot.stats[full.repair.plot.stats$exercise == 'Control',]$deriv_r
+repair.diff.deriv.stats <- repair.diff.deriv.stats %>% group_by(sex, exercise, age) %>% median_hdci(diff, .width=0.95) %>%
+    mutate(significance = ifelse(.lower >= 0, '*', ''))
+repair.diff.deriv.stats$y <- -0.82
+repair.diff.deriv.stats[repair.diff.deriv.stats$sex == 'M',]$y <- 0.05
+
+
+damage.diff.deriv.stats <- full.damage.plot.stats[full.damage.plot.stats$exercise == 'Control',]
+damage.diff.deriv.stats$diff <- full.damage.plot.stats[full.damage.plot.stats$exercise == 'Exercise',]$deriv_d - full.damage.plot.stats[full.damage.plot.stats$exercise == 'Control',]$deriv_d
+damage.diff.deriv.stats <- damage.diff.deriv.stats %>% group_by(sex, exercise, age) %>% median_hdci(diff, .width=0.95) %>%
+    mutate(significance = ifelse(.upper <= 0, '*', ''))
+damage.diff.deriv.stats$y <- -0.1
+damage.diff.deriv.stats[damage.diff.deriv.stats$sex == 'M',]$y <- 0.5
 
 exercise.repair <- ggplot() +
-    geom_lineribbon(data=full.repair.plot.stats, mapping=aes(x=age, y=lambda_r, fill=exercise,
-                                                             color=NA, ymin=.lower, ymax=.upper), alpha=0.5) +
-    geom_line(data=full.repair.plot.stats, mapping=aes(x=age, y=lambda_r,
-          fill=exercise, color=exercise,group=exercise), alpha=1, size=1.75, color='white') +
-    geom_line(data=full.repair.plot.stats, mapping=aes(x=age, y=lambda_r,
-         fill=exercise, color=exercise, group=exercise), alpha=1, size=1.25)+
+    geom_errorbar(data=full.repair.plot.stats.median, mapping=aes(x=age, y=lambda_r, fill=exercise,
+                                                             color=exercise, ymin=.lower, ymax=.upper), alpha=1.0, width=0.2) +
+    #geom_line(data=full.repair.plot.stats.median, mapping=aes(x=age, y=lambda_r,
+    #      fill=exercise, color=exercise,group=exercise), alpha=1, size=1.75, color='white') +
+    geom_point(data=full.repair.plot.stats.median, mapping=aes(x=age, y=lambda_r,
+         fill=exercise, color=exercise, group=exercise), alpha=1) +
     geom_hline(yintercept = 0, linetype="dotted") +
     theme_cowplot()  + theme(
         strip.background = element_blank(),
@@ -225,15 +321,16 @@ exercise.repair <- ggplot() +
          color='', fill='') + 
     scale_fill_manual(values = exercise.palette) +
     scale_color_manual(values = exercise.palette)  +
-    scale_x_continuous(breaks=c(0, 1, 2, 3),label = c("0", "1", "2", "3"))+ xlim(0, 3.25) + ggtitle('d) Mouse dataset 2 (Bisset et al. 2021)')
+    scale_x_continuous(breaks=c(0, 1, 2, 3),label = c("0", "1", "2", "3"))+ xlim(0, 3.5) + ggtitle('d) Mouse dataset 2 (Bisset et al. 2021)') +
+    geom_text(data = repair.diff.deriv.stats,mapping = aes(x=age, y = y, label = significance), size=4)
 
 exercise.damage <- ggplot() +
-    geom_lineribbon(data=full.damage.plot.stats, mapping=aes(x=age, y=lambda_d, fill=exercise,
-                                                             color=NA, ymin=.lower, ymax=.upper), alpha=0.5) +
-    geom_line(data=full.damage.plot.stats, mapping=aes(x=age, y=lambda_d,
-          fill=exercise, color=exercise,group=exercise), alpha=1, size=1.75, color='white') +
-    geom_line(data=full.damage.plot.stats, mapping=aes(x=age, y=lambda_d,
-         fill=exercise, color=exercise, group=exercise), alpha=1, size=1.25)+
+    geom_errorbar(data=full.damage.plot.stats.median, mapping=aes(x=age, y=lambda_d, fill=exercise,
+                                                             color=exercise, ymin=.lower, ymax=.upper), alpha=1.0, width=0.2) +
+    #geom_line(data=full.damage.plot.stats.median, mapping=aes(x=age, y=lambda_d,
+    #      fill=exercise, color=exercise,group=exercise), alpha=1, size=1.75, color='white') +
+    geom_point(data=full.damage.plot.stats.median, mapping=aes(x=age, y=lambda_d,
+         fill=exercise, color=exercise, group=exercise), alpha=1)+
     geom_hline(yintercept = 0, linetype="dotted") +
     theme_cowplot() + theme(
         strip.background = element_blank(),
@@ -250,7 +347,8 @@ exercise.damage <- ggplot() +
          color='', fill='') + 
     scale_fill_manual(values = exercise.palette) +
     scale_color_manual(values = exercise.palette) + scale_x_continuous(breaks=c(0, 1, 2, 3),
-                       label = c("0", "1", "2", "3"))+ xlim(0, 3.25)
+                                                                       label = c("0", "1", "2", "3")) + xlim(0, 3.5) +
+    geom_text(data = damage.diff.deriv.stats,mapping = aes(x=age, y = y, label = significance), size=4)
 
 
 img.enalapril <- plot_grid(enalapril.repair, enalapril.damage, ncol=1,nrow=2, rel_heights = c(1.6/3, 1.4/3)) 

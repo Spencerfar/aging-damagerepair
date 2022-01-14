@@ -7,9 +7,9 @@ Instead of simply measuring the health state as the count of binary health defic
 
 
 # Documentation
-A python package to extract counts of damaged and repaired binary health variables between longitudinal time-points (as in the above schematic) is available in damagerepair-counts/.
+A python package to extract counts of damaged and repaired binary health variables between longitudinal time-points (as in the above schematic) is available in damagerepair-counts/. It is installed with setup.py.
 
-Joint models of survival and longitudinal repair and damage counts written in Stan are available in models/. For each of the datasets, these are fit by running e.g. fit_mouse_1.r.
+Joint models of survival and longitudinal repair and damage counts written in Stan are available in models/. For each of the datasets, these are fit by running fit_mouse_1.r, fit_mouse_2.r, and fit_mouse_3.r. A longitudinal model for human repair and damage counts is fit by running fit_human.r. 
 
 Bayesian spline models for interval censored survival data written in Stan are also available in models/. These are fit in plotting_code/mouse_timescales.r and plotting_code/human_timescales.r.
 
@@ -50,9 +50,9 @@ matplotlib 3.5.1
 ```
 
 # Datasets
-Three different mice datasets are used, from https://doi.org/10.1093/gerona/gly219, https://doi.org/10.1093/gerona/glab297, and https://doi.org/10.1038/s41467-020-18446-0. Dataset 3 is freely available from https://github.com/SinclairLab/frailty.
+Three different mice datasets are used, from https://doi.org/10.1093/gerona/gly219, https://doi.org/10.1093/gerona/glab297, and https://doi.org/10.1038/s41467-020-18446-0. Dataset 3 is freely available from https://github.com/SinclairLab/frailty. The authors of the other papers should be contacted to request access to mouse datasets 1 and 2.
 
-Human data from the English Longitudinal Study of Aging are used, which can be accessed here https://www.elsa-project.ac.uk/accessing-elsa-data by registering. We use waves 1-9.
+Human data from the English Longitudinal Study of Aging are used, which can be accessed here https://www.elsa-project.ac.uk/accessing-elsa-data by registering. We use waves 1-9 from edition 31.
 
 The code used to clean and pre-process these datasets is available in clean_datasets/.
 

@@ -3,12 +3,8 @@ library(ggplot2)
 library(ggsci)
 library(gridExtra)
 library(survival)
-library(bayesplot)
-library(bayestestR)
 library(tidybayes)
 library(latex2exp)
-library(ggpubr)
-library(ggsignif)
 library(tidyr)
 library(cowplot)
 source("../utils/functions.r")
@@ -69,7 +65,7 @@ curv.diff.stats <- curv.diff.stats %>% group_by(sex, age) %>% median_hdci(diff, 
 
 enalapril.plot <- ggplot() +
     geom_errorbar(data=curv.diff.stats, mapping=aes(x=age, y=diff, fill=sex,
-                                                             color=sex, ymin=.lower, ymax=.upper), alpha=0.5) +
+                                                             color=sex, ymin=.lower, ymax=.upper)) +
     #geom_line(data=curv.diff.stats, mapping=aes(x=age, y=diff,
     #      fill=sex, color=sex,group=sex), alpha=1, size=1.75, color='white') +
     geom_point(data=curv.diff.stats, mapping=aes(x=age, y=diff,
@@ -86,7 +82,7 @@ enalapril.plot <- ggplot() +
         legend.position = "none",
         plot.margin = unit(c(0.01, 0, 0, 0.01), "cm")) +
     facet_grid(~sex) +
-    labs(y='FI curvature intervention difference', x='Age (months)',
+    labs(y='FI curvature intervention difference', x='Time since intervention (months)',
          color='', fill='') +
     scale_color_manual(values=sex.palette) +
     scale_fill_manual(values=sex.palette)+ xlim(0, 10.25)+
@@ -143,7 +139,7 @@ levels(curv.diff.stats$sex) <- c('Female', 'Male')
 
 exercise.plot <- ggplot() +
     geom_errorbar(data=curv.diff.stats, mapping=aes(x=age, y=diff, fill=sex,
-                                                             color=sex, ymin=.lower, ymax=.upper), alpha=0.5) +
+                                                             color=sex, ymin=.lower, ymax=.upper)) +
     #geom_line(data=curv.diff.stats, mapping=aes(x=age, y=diff,
     #      fill=sex, color=sex,group=sex), alpha=1, size=1.75, color='white') +
     geom_point(data=curv.diff.stats, mapping=aes(x=age, y=diff,
@@ -160,10 +156,10 @@ exercise.plot <- ggplot() +
         legend.position = "none",
         plot.margin = unit(c(0.01, 0, 0, 0.01), "cm")) +
     facet_grid(~sex) +
-    labs(y='', x='Age (months)',
+    labs(y='', x='Time since intervention (months)',
          color='', fill='') +  
   scale_color_manual(values=sex.palette) +
-    scale_fill_manual(values=sex.palette) +  scale_x_continuous(breaks=c(0, 1, 2, 3), label = c("0", "1", "2", "3"))+ xlim(0, 3.25) +
+    scale_fill_manual(values=sex.palette) +  scale_x_continuous(breaks=c(0, 1, 2, 3), label = c("0", "1", "2", "3"))+ xlim(0, 3.5) +
     ggtitle('e) Mouse dataset 2 (Bisset et al. 2021)')
 
 img <- grid.arrange(enalapril.plot, exercise.plot, ncol=2,nrow=1)

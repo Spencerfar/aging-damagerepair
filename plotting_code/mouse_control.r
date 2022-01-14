@@ -3,8 +3,6 @@ library(ggplot2)
 library(ggsci)
 library(gridExtra)
 library(survival)
-library(bayesplot)
-library(bayestestR)
 library(tidybayes)
 library(latex2exp)
 library(tidyr)
@@ -453,8 +451,8 @@ corr.repair.text[corr.repair.text$sex=='Male',]$y <- 1.12
 corr.repair.text[corr.repair.text$sex=='Female',]$y <- 0.91
 
 corr.damage.text$y <- 0
-corr.damage.text[corr.damage.text$sex=='Male',]$y <- 0.465
-corr.damage.text[corr.damage.text$sex=='Female',]$y <- 0.41
+corr.damage.text[corr.damage.text$sex=='Male',]$y <- 0.455
+corr.damage.text[corr.damage.text$sex=='Female',]$y <- 0.405
 
 # plot repair
 exercise.repair <- ggplot() +

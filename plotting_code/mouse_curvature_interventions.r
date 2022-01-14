@@ -3,12 +3,8 @@ library(ggplot2)
 library(ggsci)
 library(gridExtra)
 library(survival)
-library(bayesplot)
-library(bayestestR)
 library(tidybayes)
 library(latex2exp)
-library(ggpubr)
-library(ggsignif)
 library(tidyr)
 library(cowplot)
 source("../utils/functions.r")
@@ -37,7 +33,7 @@ binned <- midpoints(binned)
 fit <- readRDS('../fits/mouse_1.rds') 
 
 
-fdotdot.plot <- fit %>%
+fdotdot.plot.median <- fit %>%
     spread_draws(lambda_r[n], lambda_d[n], deriv_r[n], deriv_d[n], deriv_r_f[n], deriv_d_f[n]) %>%
     group_by(.iteration, .chain) %>%
     mutate(sex = enalapril.test[n, 'sex']) %>%
@@ -55,19 +51,46 @@ fdotdot.plot <- fit %>%
     group_by(sex, treatment, age) %>%
     median_hdci(dotdotf, .width=0.95)
 
+fdotdot.plot.median$sex <- as.factor(fdotdot.plot.median$sex)
+fdotdot.plot.median$treatment <- as.factor(fdotdot.plot.median$treatment)
+levels(fdotdot.plot.median$sex) <- c('Female', 'Male')
+
+
+fdotdot.plot <- fit %>%
+    spread_draws(lambda_r[n], lambda_d[n], deriv_r[n], deriv_d[n], deriv_r_f[n], deriv_d_f[n]) %>%
+    group_by(.iteration, .chain) %>%
+    mutate(sex = enalapril.test[n, 'sex']) %>%
+    mutate(treatment = enalapril.test[n, 'treatment']) %>%
+    mutate(f = enalapril.test[n, 'f']) %>%
+    mutate(age = binned[n]) %>%
+    mutate(deriv_r_f = deriv_r_f * f.sd) %>%
+    mutate(deriv_d_f = deriv_d_f * f.sd) %>%
+    mutate(dotf = (1 - f)*lambda_d - f*lambda_r )  %>%
+    mutate(dotdotf = -dotf*(lambda_d+lambda_r) - f*(deriv_r + dotf*deriv_r_f) + (1-f)*(deriv_d + dotf*deriv_d_f))  %>%
+    ungroup() %>%
+    group_by(sex, treatment, age, .draw) %>%
+    summarize(dotdotf=mean(dotdotf)) %>%
+    ungroup() %>%  filter(age <= 8.5) %>% as.data.frame()
 
 fdotdot.plot$sex <- as.factor(fdotdot.plot$sex)
 fdotdot.plot$treatment <- as.factor(fdotdot.plot$treatment)
-
 levels(fdotdot.plot$sex) <- c('Female', 'Male')
 
+# curvature
+curv.diff.stats <- fdotdot.plot[fdotdot.plot$treatment == 'Control',]
+curv.diff.stats$diff <- fdotdot.plot[fdotdot.plot$treatment == 'Enalapril',]$dotdotf - fdotdot.plot[fdotdot.plot$treatment == 'Control',]$dotdotf
+curv.diff.stats <- curv.diff.stats %>% group_by(sex, age) %>% median_hdci(diff, .width=0.95) %>%
+    mutate(significance = ifelse(.upper <= 0, '*', ''))
+curv.diff.stats$y <- 0.02
+curv.diff.stats[curv.diff.stats$sex == 'Male',]$y <- 0.47
+
 enalapril.plot <- ggplot() +
-    geom_lineribbon(data=fdotdot.plot, mapping=aes(x=age, y=dotdotf, fill=treatment,
-                                                             color=NA, ymin=.lower, ymax=.upper), alpha=0.5) +
-    geom_line(data=fdotdot.plot, mapping=aes(x=age, y=dotdotf,
-          fill=treatment, color=treatment,group=treatment), alpha=1, size=1.75, color='white') +
-    geom_line(data=fdotdot.plot, mapping=aes(x=age, y=dotdotf,
-         fill=treatment, color=treatment, group=treatment), alpha=1, size=1.25)+
+    geom_errorbar(data=fdotdot.plot.median, mapping=aes(x=age, y=dotdotf, fill=treatment,
+                                                             color=treatment, ymin=.lower, ymax=.upper), alpha=1.0, width=0.5) +
+    #geom_line(data=fdotdot.plot.median, mapping=aes(x=age, y=dotdotf,
+    #      fill=treatment, color=treatment,group=treatment), alpha=1, size=1.75, color='white') +
+    geom_point(data=fdotdot.plot.median, mapping=aes(x=age, y=dotdotf,
+         fill=treatment, color=treatment, group=treatment), alpha=1, size=1.00)+
     geom_hline(yintercept = 0, linetype="dotted") +
     theme_cowplot() + theme(
         strip.background = element_blank(),
@@ -80,11 +103,12 @@ enalapril.plot <- ggplot() +
         legend.text = element_text(size = 6),
         plot.margin = unit(c(0.01, 0, 0, 0.01), "cm")) +
     facet_grid(~sex) +
-    labs(y='Frailty Index curvature terms', x='Age (months)',
+    labs(y='Frailty Index curvature', x='Time since intervention (months)',
          color='', fill='') +
     scale_fill_d3() +
     scale_color_d3() + xlim(0, 10.25)+
-    ggtitle('a) Mouse dataset 1 (Keller et al. 2019)')
+    ggtitle('a) Mouse dataset 1 (Keller et al. 2019)')+
+    geom_text(data = curv.diff.stats,mapping = aes(x=age, y = y, label = significance), size=4)
     #scale_x_continuous(breaks=c(16, 18, 20, 22, 24),
     #                   label = c("16", "18", "20", "22", "24")) +
     #scale_color_manual(values=c('Damage rate\n terms' = '#CC79A7', 'Repair rate\n terms'='#009E73')) +
@@ -114,7 +138,7 @@ binned.test <- cut(exercise.test$time, bins, include.lowest = TRUE)
 binned.test <- midpoints(binned.test)
 
 
-fdotdot.plot <- fit %>%
+fdotdot.plot.median <- fit %>%
     spread_draws(lambda_r[n], lambda_d[n], deriv_r[n], deriv_d[n], deriv_r_f[n], deriv_d_f[n]) %>%
     group_by(.iteration, .chain) %>%
     mutate(sex = exercise.test[n, 'sex']) %>%
@@ -132,20 +156,47 @@ fdotdot.plot <- fit %>%
     group_by(sex, exercise, age) %>%
     median_hdci(dotdotf, .width=0.95) %>% as.data.frame()
 
-fdotdot.plot$exercise <- as.factor(fdotdot.plot$exercise)
-fdotdot.plot$sex <- as.factor(fdotdot.plot$sex)
-levels(fdotdot.plot$exercise) <- c('Control', 'Exercise')
-levels(fdotdot.plot$sex) <- c('Female', 'Male')
+fdotdot.plot.median$exercise <- as.factor(fdotdot.plot.median$exercise)
+fdotdot.plot.median$sex <- as.factor(fdotdot.plot.median$sex)
+levels(fdotdot.plot.median$exercise) <- c('Control', 'Exercise')
+levels(fdotdot.plot.median$sex) <- c('Female', 'Male')
 
+
+fdotdot.plot <- fit %>%
+    spread_draws(lambda_r[n], lambda_d[n], deriv_r[n], deriv_d[n], deriv_r_f[n], deriv_d_f[n]) %>%
+    group_by(.iteration, .chain) %>%
+    mutate(sex = exercise.test[n, 'sex']) %>%
+    mutate(exercise = exercise.test[n, 'exercise']) %>%
+    mutate(f = exercise.test[n, 'f']) %>%
+    mutate(age = binned.test[n]) %>%
+    mutate(deriv_r_f = deriv_r_f * f.sd) %>%
+    mutate(deriv_d_f = deriv_d_f * f.sd) %>%
+    mutate(dotf = (1 - f)*lambda_d - f*lambda_r )  %>%
+    mutate(dotdotf = -dotf*(lambda_d+lambda_r) - f*(deriv_r + dotf*deriv_r_f) + (1-f)*(deriv_d + dotf*deriv_d_f))  %>%
+    ungroup() %>%
+    group_by(sex, exercise, age, .draw) %>%
+    summarize(dotdotf=mean(dotdotf)) %>%
+    ungroup() %>% as.data.frame()
+
+
+# curvature
+curv.diff.stats <- fdotdot.plot[fdotdot.plot$exercise == 'no',]
+curv.diff.stats$diff <- fdotdot.plot[fdotdot.plot$exercise == 'yes',]$dotdotf - fdotdot.plot[fdotdot.plot$exercise == 'no',]$dotdotf
+curv.diff.stats <- curv.diff.stats %>% group_by(sex, age) %>% median_hdci(diff, .width=0.95) %>%  mutate(significance = ifelse(.upper <= 0, '*', ''))
+curv.diff.stats$y <- -0.17
+curv.diff.stats[curv.diff.stats$sex == 'M',]$y <- -0.22
+
+curv.diff.stats$sex <- as.factor(curv.diff.stats$sex)
+levels(curv.diff.stats$sex) <- c('Female', 'Male')
 
 
 exercise.plot <- ggplot() +
-    geom_lineribbon(data=fdotdot.plot, mapping=aes(x=age, y=dotdotf, fill=exercise,
-                                                             color=NA, ymin=.lower, ymax=.upper), alpha=0.5) +
-    geom_line(data=fdotdot.plot, mapping=aes(x=age, y=dotdotf,
-          fill=exercise, color=exercise,group=exercise), alpha=1, size=1.75, color='white') +
-    geom_line(data=fdotdot.plot, mapping=aes(x=age, y=dotdotf,
-         fill=exercise, color=exercise, group=exercise), alpha=1, size=1.25)+
+    geom_errorbar(data=fdotdot.plot.median, mapping=aes(x=age, y=dotdotf, fill=exercise,
+                                                             color=exercise, ymin=.lower, ymax=.upper), alpha=1.0, width=0.2) +
+    #geom_line(data=fdotdot.plot.median, mapping=aes(x=age, y=dotdotf,
+    #      fill=exercise, color=exercise,group=exercise), alpha=1, size=1.75, color='white') +
+    geom_point(data=fdotdot.plot.median, mapping=aes(x=age, y=dotdotf,
+         fill=exercise, color=exercise, group=exercise), alpha=1, size=1.00)+
     geom_hline(yintercept = 0, linetype="dotted") +
     theme_cowplot() + theme(
         strip.background = element_blank(),
@@ -158,11 +209,12 @@ exercise.plot <- ggplot() +
         legend.text = element_text(size = 6),
         plot.margin = unit(c(0.01, 0, 0, 0.01), "cm")) +
     facet_grid(~sex) +
-    labs(y='', x='Age (months)',
+    labs(y='', x='Time since intervention (months)',
          color='', fill='') +  
     scale_fill_manual(values = exercise.palette) +
-    scale_color_manual(values = exercise.palette) + scale_x_continuous(breaks=c(0, 1, 2, 3), label = c("0", "1", "2", "3"))+ xlim(0, 3.25) +
-    ggtitle('b) Mouse dataset 2 (Bisset et al. 2021)')
+    scale_color_manual(values = exercise.palette) + scale_x_continuous(breaks=c(0, 1, 2, 3), label = c("0", "1", "2", "3"))+ xlim(0, 3.5) +
+    ggtitle('b) Mouse dataset 2 (Bisset et al. 2021)') +
+    geom_text(data = curv.diff.stats,mapping = aes(x=age, y = y, label = significance), size=4)
     #scale_color_manual(values=c('Damage rate\n terms' = '#e04d52', 'Repair rate\n terms'='#54b14e'))+
     #scale_color_manual(values=c('Damage rate\n terms' = '#CC79A7', 'Repair rate\n terms'='#009E73')) +
     #guides(colour = guide_legend(override.aes = list(size=1., alpha=1))) + 

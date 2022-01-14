@@ -3,12 +3,8 @@ library(ggplot2)
 library(ggsci)
 library(gridExtra)
 library(survival)
-library(bayesplot)
-library(bayestestR)
 library(tidybayes)
 library(latex2exp)
-library(ggpubr)
-library(ggsignif)
 library(tidyr)
 library(cowplot)
 source("../utils/functions.r")
@@ -74,7 +70,7 @@ levels(fdot.plot$sex) <- c('Female', 'Male')
 fdot.plot <- fdot.plot[fdot.plot$treatment=='Control',]
 
 terms.enalapril <- ggplot() +
-    geom_errorbar(data=fdot.plot, mapping=aes(x=age, y=ratio, ymin=.lower, ymax=.upper, fill=sex, color=sex), alpha=0.5) +
+    geom_errorbar(data=fdot.plot, mapping=aes(x=age, y=ratio, ymin=.lower, ymax=.upper, fill=sex, color=sex)) +
     #geom_line(data=fdot.plot, mapping=aes(x=age, y=ratio), alpha=1, size=1.75, color='white') +
     geom_point(data=fdot.plot, mapping=aes(x=age, y=ratio, color=sex), alpha=1, size=1.25) +
     geom_hline(yintercept = 0, linetype="dotted") +
@@ -153,7 +149,7 @@ fdot.plot <- fdot.plot[fdot.plot$exercise=='Control',]
 
 
 terms.exercise <- ggplot() +
-    geom_errorbar(data=fdot.plot, mapping=aes(x=age, y=ratio, ymin=.lower, ymax=.upper, fill=sex, color=sex), alpha=0.5) +
+    geom_errorbar(data=fdot.plot, mapping=aes(x=age, y=ratio, ymin=.lower, ymax=.upper, fill=sex, color=sex)) +
     #geom_line(data=fdot.plot, mapping=aes(x=age, y=ratio), alpha=1, size=1.75, color='white') +
     geom_point(data=fdot.plot, mapping=aes(x=age, y=ratio, color=sex), alpha=1, size=1.25) +
     geom_hline(yintercept = 0, linetype="dotted") +
@@ -196,7 +192,7 @@ binned.test <- midpoints(binned.test)
 
 
 fdot.plot <- fit %>%
-    spread_draws(lambda_r[n], lambda_d[n], deriv_r[n], deriv_d[n], deriv_r_f[n], deriv_d_f[n], n = 100) %>%
+    spread_draws(lambda_r[n], lambda_d[n], deriv_r[n], deriv_d[n], deriv_r_f[n], deriv_d_f[n]) %>%
     group_by(.iteration, .chain) %>%
     mutate(sex = schultz.test[n, 'sex']) %>%
     mutate(f = schultz.test[n, 'f']) %>%
@@ -218,7 +214,7 @@ fdot.plot <- fit %>%
 
 
 terms.schultz <- ggplot() +
-    geom_errorbar(data=fdot.plot, mapping=aes(x=age, y=ratio, ymin=.lower, ymax=.upper, fill=sex, color=sex), alpha=0.5) +
+    geom_errorbar(data=fdot.plot, mapping=aes(x=age, y=ratio, ymin=.lower, ymax=.upper, fill=sex, color=sex)) +
     #geom_line(data=fdot.plot, mapping=aes(x=age, y=ratio), alpha=1, size=1.75, color='white') +
     geom_point(data=fdot.plot, mapping=aes(x=age, y=ratio, color=sex), alpha=1, size=1.25) +
     geom_hline(yintercept = 0, linetype="dotted") +

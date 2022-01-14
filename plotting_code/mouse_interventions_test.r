@@ -3,12 +3,8 @@ library(ggplot2)
 library(ggsci)
 library(gridExtra)
 library(survival)
-library(bayesplot)
-library(bayestestR)
 library(tidybayes)
 library(latex2exp)
-library(ggpubr)
-library(ggsignif)
 library(tidyr)
 library(cowplot)
 source("../utils/functions.r")
@@ -91,9 +87,9 @@ damage.diff.deriv.stats <- damage.diff.deriv.stats %>% group_by(sex, treatment, 
 
 enalapril.repair <- ggplot() +
     geom_errorbar(data=repair.diff.stats, mapping=aes(x=age, y=diff,
-                                                             color=sex, ymin=.lower, ymax=.upper, fill=sex), alpha=0.5) +
+                                                             color=sex, ymin=.lower, ymax=.upper, fill=sex), alpha=1.0) +
     #geom_line(data=repair.diff.stats, mapping=aes(x=age, y=diff, fill=sex, color=sex), alpha=1, size=1.75, color='white') +
-    geom_point(data=repair.diff.stats, mapping=aes(x=age, y=diff, fill=sex,color=sex), alpha=1, size=1.25 )+
+    geom_point(data=repair.diff.stats, mapping=aes(x=age, y=diff, fill=sex,color=sex), alpha=1, size=1.25)+
     geom_hline(yintercept = 0, linetype="dotted") +
     theme_cowplot() + theme(
         strip.background = element_blank(),
@@ -114,7 +110,7 @@ enalapril.repair <- ggplot() +
 
 enalapril.damage <- ggplot() +
     #geom_line(data=full.damage.plot, mapping=aes(x=age, y=lambda_d, color=treatment, group=interaction(treatment,.draw)), alpha=0.05) +
-    geom_errorbar(data=damage.diff.stats, mapping=aes(x=age, y=diff, ymin=.lower, ymax=.upper,fill=sex, color=sex), alpha=0.5) +
+    geom_errorbar(data=damage.diff.stats, mapping=aes(x=age, y=diff, ymin=.lower, ymax=.upper,fill=sex, color=sex), alpha=1.0) +
     #geom_line(data=damage.diff.stats, mapping=aes(x=age, y=diff, fill=sex,color=sex), alpha=1, size=1.75, color='white') +
     geom_point(data=damage.diff.stats, mapping=aes(x=age, y=diff, fill=sex,color=sex), alpha=1, size=1.25)+
     geom_hline(yintercept = 0, linetype="dotted") +
@@ -137,7 +133,7 @@ enalapril.damage <- ggplot() +
 
 
 enalapril.deriv.repair <- ggplot() +
-    geom_errorbar(data=repair.diff.deriv.stats, mapping=aes(x=age, y=diff, ymin=.lower, ymax=.upper, fill=sex, color=sex), alpha=0.5) +
+    geom_errorbar(data=repair.diff.deriv.stats, mapping=aes(x=age, y=diff, ymin=.lower, ymax=.upper, fill=sex, color=sex), alpha=1.0) +
     #geom_line(data=repair.diff.deriv.stats, mapping=aes(x=age, y=diff, fill=sex,color=sex), alpha=1, size=1.75, color='white') +
     geom_point(data=repair.diff.deriv.stats, mapping=aes(x=age, y=diff, fill=sex,color=sex), alpha=1, size=1.25)+
     geom_hline(yintercept = 0, linetype="dotted") +
@@ -159,7 +155,7 @@ enalapril.deriv.repair <- ggplot() +
 
 
 enalapril.deriv.damage <- ggplot() +
-    geom_errorbar(data=damage.diff.deriv.stats, mapping=aes(x=age, y=diff, ymin=.lower, ymax=.upper, fill=sex, color=sex), alpha=0.5) +
+    geom_errorbar(data=damage.diff.deriv.stats, mapping=aes(x=age, y=diff, ymin=.lower, ymax=.upper, fill=sex, color=sex), alpha=1.0) +
     #geom_line(data=damage.diff.deriv.stats, mapping=aes(x=age, y=diff, fill=sex,color=sex), alpha=1, size=1.75, color='white') +
     geom_point(data=damage.diff.deriv.stats, mapping=aes(x=age, y=diff, fill=sex,color=sex), alpha=1, size=1.25)+
     geom_hline(yintercept = 0, linetype="dotted") +
@@ -260,7 +256,7 @@ damage.diff.deriv.stats$diff <- full.damage.plot.stats[full.damage.plot.stats$ex
 damage.diff.deriv.stats <- damage.diff.deriv.stats %>% group_by(sex, exercise, age) %>% median_hdci(diff, .width=0.95)
 
 exercise.repair <- ggplot() +
-    geom_errorbar(data=repair.diff.stats, mapping=aes(x=age, y=diff, ymin=.lower, ymax=.upper, fill=sex,color=sex), alpha=0.5) +
+    geom_errorbar(data=repair.diff.stats, mapping=aes(x=age, y=diff, ymin=.lower, ymax=.upper, fill=sex,color=sex), alpha=1.0) +
     #geom_line(data=repair.diff.stats, mapping=aes(x=age, y=diff, color=sex,fill=sex), alpha=1, size=1.75, color='white') +
     geom_point(data=repair.diff.stats, mapping=aes(x=age, y=diff, color=sex,fill=sex), alpha=1, size=1.25)+
     geom_hline(yintercept = 0, linetype="dotted") +
@@ -282,7 +278,7 @@ exercise.repair <- ggplot() +
     scale_fill_manual(values=sex.palette) + ggtitle("d) Mouse dataset 2 (Bisset et al. 2021)")
 
 exercise.damage <- ggplot() +
-    geom_errorbar(data=damage.diff.stats, mapping=aes(x=age, y=diff, ymin=.lower, ymax=.upper,fill=sex, color=sex), alpha=0.5) +
+    geom_errorbar(data=damage.diff.stats, mapping=aes(x=age, y=diff, ymin=.lower, ymax=.upper,fill=sex, color=sex), alpha=1.0) +
     #geom_line(data=damage.diff.stats, mapping=aes(x=age, y=diff, color=sex,fill=sex), alpha=1, size=1.75, color='white') +
     geom_point(data=damage.diff.stats, mapping=aes(x=age, y=diff, color=sex,fill=sex), alpha=1, size=1.25)+
     geom_hline(yintercept = 0, linetype="dotted") +
@@ -306,7 +302,7 @@ exercise.damage <- ggplot() +
 
 
 exercise.deriv.repair <- ggplot() +
-    geom_errorbar(data=repair.diff.deriv.stats, mapping=aes(x=age, y=diff,ymin=.lower, ymax=.upper,fill=sex,color=sex), alpha=0.5) +
+    geom_errorbar(data=repair.diff.deriv.stats, mapping=aes(x=age, y=diff,ymin=.lower, ymax=.upper,fill=sex,color=sex), alpha=1.0) +
     #geom_line(data=repair.diff.deriv.stats, mapping=aes(x=age, y=diff, color=sex,fill=sex), alpha=1, size=1.75, color='white') +
     geom_point(data=repair.diff.deriv.stats, mapping=aes(x=age, y=diff, color=sex,fill=sex), alpha=1, size=1.25)+
     geom_hline(yintercept = 0, linetype="dotted") +
@@ -328,7 +324,7 @@ exercise.deriv.repair <- ggplot() +
     scale_fill_manual(values=sex.palette)
 
 exercise.deriv.damage <- ggplot() +
-    geom_errorbar(data=damage.diff.deriv.stats, mapping=aes(x=age, y=diff,ymin=.lower, ymax=.upper, fill=sex,color=sex), alpha=0.5) +
+    geom_errorbar(data=damage.diff.deriv.stats, mapping=aes(x=age, y=diff,ymin=.lower, ymax=.upper, fill=sex,color=sex), alpha=1.0) +
     #geom_line(data=damage.diff.deriv.stats, mapping=aes(x=age, y=diff, color=sex,fill=sex), alpha=1, size=1.75, color='white') +
     geom_point(data=damage.diff.deriv.stats, mapping=aes(x=age, y=diff, color=sex,fill=sex), alpha=1, size=1.25)+
     geom_hline(yintercept = 0, linetype="dotted") +

@@ -4,12 +4,8 @@ library(ggplot2)
 library(ggsci)
 library(gridExtra)
 library(survival)
-library(bayesplot)
-library(bayestestR)
 library(tidybayes)
 library(latex2exp)
-library(ggpubr)
-library(ggsignif)
 library(cowplot)
 source("../utils/functions.r")
 source("../utils/palettes.r")
@@ -107,7 +103,7 @@ damage <- fit %>%
 
 
 corr.repair <- fit %>%
-    spread_draws(lambda_r[n], n = 100) %>%
+    spread_draws(lambda_r[n]) %>%
     group_by(.draw) %>%
     mutate(sex = elsa.test[n, 'sex']) %>%
     mutate(time = elsa.test[n, 'time']) %>%
@@ -121,7 +117,7 @@ corr.repair <- fit %>%
     summarize(corr_r = mean(corr_r, na.rm=TRUE))
 
 corr.damage <- fit %>%
-    spread_draws(lambda_d[n], n = 100) %>%
+    spread_draws(lambda_d[n]) %>%
     group_by(.draw) %>%
     mutate(sex = elsa.test[n, 'sex']) %>%
     mutate(time = elsa.test[n, 'time']) %>%

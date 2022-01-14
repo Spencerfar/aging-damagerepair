@@ -4,12 +4,8 @@ library(ggplot2)
 library(ggsci)
 library(gridExtra)
 library(survival)
-library(bayesplot)
-library(bayestestR)
 library(tidybayes)
 library(latex2exp)
-library(ggpubr)
-library(ggsignif)
 library(cowplot)
 source("../utils/functions.r")
 source("../utils/palettes.r")
@@ -93,7 +89,7 @@ fdotdot.terms.control <- ggplot() +
         strip.text.y=element_text(size=7),
         plot.title=element_text(size=8),
         legend.position = 'none',
-        plot.margin = unit(c(0, 0, 0, 0.01), "cm")) + ggtitle('d) ELSA humans (Phelps et al. 2020)') +
+        plot.margin = unit(c(0, 0, 0, 0.01), "cm")) + ggtitle('f) ELSA humans (Phelps et al. 2020)') +
     scale_color_manual(values=c('Male' = sex.palette[2], 'Female'=sex.palette[1])) +
     scale_fill_manual(values=c('Male' = sex.palette[2], 'Female'=sex.palette[1])) +
     guides(colour = guide_legend(override.aes = list(size=1., alpha=1))) + ylim(-2.5,4.5)
