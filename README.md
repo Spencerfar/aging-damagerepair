@@ -17,8 +17,6 @@ R Packages used:
 ```
 R 4.1.0
 abind 1.4-5
-#bayesplot 1.8.1
-#bayestestR 0.11.5
 caret 6.0-90
 cmdstanr 0.4.0
 cowplot 1.1.1
