@@ -46,6 +46,7 @@ python 3.8.10
 pyreadstat 1.1.0
 pandas 1.2.1
 numpy 1.19.5
+matplotlib 3.5.1
 ```
 
 # Datasets
