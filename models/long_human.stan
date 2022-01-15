@@ -201,7 +201,7 @@ model {
 	p_spline ~ dirichlet(p_alpha);
 	
 	//longitudinal priors
-	beta_int ~ normal(0.0, 5.0);
+	beta_int ~ normal(0.0, 3.0);
 	beta_r ~ std_normal();
 	beta_d ~ std_normal();
 	

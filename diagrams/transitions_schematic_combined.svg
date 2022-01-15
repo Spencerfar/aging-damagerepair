@@ -16,7 +16,10 @@
    id="svg2"
    version="1.1"
    inkscape:version="0.92.5 (2060ec1f9f, 2020-04-08)"
-   sodipodi:docname="transitions_schematic_combined.svg">
+   sodipodi:docname="transitions_schematic_combined.svg"
+   inkscape:export-filename="/home/spencer/Dropbox/Frailty/Mouse_transition/aging-damagerepair/diagrams/transitions_schematic_combined.png"
+   inkscape:export-xdpi="400"
+   inkscape:export-ydpi="400">
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -25,8 +28,8 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="3.054069"
-     inkscape:cx="272.12163"
-     inkscape:cy="84.05878"
+     inkscape:cx="211.71042"
+     inkscape:cy="82.749052"
      inkscape:document-units="px"
      inkscape:current-layer="surface35838"
      showgrid="false"

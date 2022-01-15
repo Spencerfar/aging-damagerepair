@@ -13,6 +13,7 @@ elsa <- na.omit(elsa)
 elsa$f <- elsa$n/elsa$N
 elsa$wealth <- log(elsa$wealth + mean(elsa$wealth))
 
+
 elsa.X <- elsa[,c('sex', 'baseline.age', 'time', 'f', 'wealth')]
 elsa.X.slope <- elsa[,c('sex', 'baseline.age', 'time', 'f', 'wealth')]
 elsa.Z <- elsa[,c('time', 'f')]
