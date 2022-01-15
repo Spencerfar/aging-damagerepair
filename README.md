@@ -56,5 +56,8 @@ Human data from the English Longitudinal Study of Aging are used, which can be a
 
 The code used to clean and pre-process these datasets is available in clean_datasets/.
 
+# Demo
+Running setup_demo.sh in demo/ will download and prepare mouse dataset 3. The model for this dataset can then be fit by running fit_mouse_3.r. 
+
 # Citation
 Pre-print out soon.

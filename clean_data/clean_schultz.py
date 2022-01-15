@@ -1,9 +1,14 @@
 import pandas as pd
 import numpy as np
+import argparse
 from damagerepair_counting.counting import counting
 
+parser = argparse.ArgumentParser('Clean Schultz')
+parser.add_argument('--folder', type=str, default = '../../step_data/')
+args = parser.parse_args()
+
 ##### read data
-data = pd.read_csv('../../step_data/Schultz.csv')
+data = pd.read_csv(args.folder + 'Schultz.csv')
 
 # remove single times
 single_times = []
