@@ -33,7 +33,6 @@ levels(elsa$sex) <- c('Male', 'Female')
 elsa.test <- na.omit(elsa)
 elsa.na <- na.omit(elsa.test)
 
-
 elsa.na$prepair <- (elsa.na$repair/elsa.na$n)/elsa.na$delta.t
 elsa.na$pdamage <- (elsa.na$damage/(elsa.na$N - elsa.na$n))/elsa.na$delta.t
 

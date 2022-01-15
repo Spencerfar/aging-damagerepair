@@ -12,7 +12,6 @@ library(cowplot)
 library(ggfortify)
 library(splines2)
 library(pammtools)
-#library(forcats)
 library(glrt)
 source("../utils/functions.r")
 source("../utils/palettes.r")
@@ -22,17 +21,13 @@ elsa <- read.csv('../datasets/human_data.csv', header = TRUE, sep = ",")
 elsa$id <- as.character(elsa$id)
 elsa$time <- elsa$age - elsa$baseline.age
 
-elsa <- elsa %>% group_by(id) %>% filter( (baseline.age >= 45)  & (age < 95))
+elsa <- elsa %>% group_by(id) %>% filter( (baseline.age >= 50)  & (baseline.age < 90))
 
 elsa <- na.omit(elsa)
 
 elsa$f <- elsa$n/elsa$N
 mean.wealth <- mean(elsa$wealth)
 elsa$wealth <- log(elsa$wealth + mean.wealth)
-
-elsa <- elsa %>% group_by(id) %>% filter(all(delta.t<=4))
-elsa <- elsa %>% group_by(id) %>% filter(n()>5) %>% as.data.frame()
-
 
 bins <- seq(50, 90, by=10)
 elsa <- 
