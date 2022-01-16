@@ -4,6 +4,12 @@ library(splines2)
 library(cmdstanr)
 set_cmdstan_path("~/Downloads/cmdstan-2.26.0/")
 
+# seed
+args <- commandArgs(trailingOnly = TRUE)
+stopifnot(length(args) == 1)
+stopifnot(!is.na(as.numeric(args)))
+chain <- as.numeric(args)
+
 # create folder for fits
 if (!dir.exists('fits')) {dir.create('fits')}
 
@@ -93,7 +99,7 @@ model$check_syntax(pedantic = TRUE)
 
 fit <- model$sample(
   data = data,
-  seed = 2,
+  seed = chain,
   chains = 1,
   parallel_chains = 1,
   refresh = 5,
@@ -102,7 +108,7 @@ fit <- model$sample(
   threads_per_chain=40
 )
 
-fit$save_object(file = "fits/long_human_fit_chain2.RDS")
+fit$save_object(file = sprintf("fits/long_human_fit_chain%d.RDS", chain))
 fit$save_output_files(dir = "fits/")
 
 #fit$save_object(file = "~/resilience/long_human_fit_100.RDS")
