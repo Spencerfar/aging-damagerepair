@@ -22,7 +22,15 @@ elsa.test <- na.omit(elsa)
 elsa$f <- elsa$n/elsa$N
 elsa$wealth <- log(elsa$wealth + mean(elsa$wealth))
 
-fit <- as_draws_df(readRDS("../fits/long_human_fit.RDS")$draws(c("sampled_repair", "sampled_damage", "sampled_n")))
+# read stan fits and combine chains
+fit1 <- as_draws_df(readRDS("../fits/long_human_fit_chain1.RDS")$draws(c("sampled_repair", "sampled_damage", "sampled_n")))
+fit2 <- as_draws_df(readRDS("../fits/long_human_fit_chain2.RDS")$draws(c("sampled_repair", "sampled_damage", "sampled_n")))
+fit2$.chain <- 2
+fit2$.draw <- max(fit1$.draw) + fit2$.draw + 1
+fit <- rbind(fit1, fit2)
+rm(fit1)
+rm(fit2)
+gc()
 
 sampled.data <- fit %>%
     spread_draws(sampled_repair[n], sampled_damage[n], sampled_n[n])

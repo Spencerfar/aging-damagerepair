@@ -90,16 +90,16 @@ model$check_syntax(pedantic = TRUE)
 
 fit <- model$sample(
   data = data,
-  seed = 1,
+  seed = 2,
   chains = 1,
   parallel_chains = 1,
   refresh = 5,
   iter_warmup = 1000,
   iter_sampling = 3000,
-  threads_per_chain=12
+  threads_per_chain=40
 )
 
-fit$save_object(file = "fits/long_human_fit.RDS")
+fit$save_object(file = "fits/long_human_fit_chain2.RDS")
 fit$save_output_files(dir = "fits/")
 
 #fit$save_object(file = "~/resilience/long_human_fit_100.RDS")

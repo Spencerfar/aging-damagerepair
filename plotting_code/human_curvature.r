@@ -38,8 +38,15 @@ xs <- c(55, 55, 75, 85, 55,55, 75,85)
 human.text <- data.frame(baseline.bin=c('Baseline age: [50,60)','[60,70)','[70,80)','[80,90)', 'Baseline age: [50,60)','[60,70)','[70,80)','[80,90)'),sex=c('Female', 'Female', 'Female', 'Female', 'Male', 'Male','Male','Male'), label = labels, x= xs)
 human.text$baseline.bin <- factor(human.text$baseline.bin, levels=c('Baseline age: [50,60)','[60,70)','[70,80)','[80,90)'))
 
-# read stan fit
-fit <- as_draws_df(readRDS("../fits/long_human_fit.RDS")$draws(c("lambda_r", "lambda_d", "deriv_r", "deriv_d", "deriv_r_f", "deriv_d_f")))
+# read stan fits and combine chains
+fit1 <- as_draws_df(readRDS("../fits/long_human_fit_chain1.RDS")$draws(c("lambda_r", "lambda_d", "deriv_r", "deriv_d", "deriv_r_f", "deriv_d_f")))
+fit2 <- as_draws_df(readRDS("../fits/long_human_fit_chain2.RDS")$draws(c("lambda_r", "lambda_d", "deriv_r", "deriv_d", "deriv_r_f", "deriv_d_f")))
+fit2$.chain <- 2
+fit2$.draw <- max(fit1$.draw) + fit2$.draw + 1
+fit <- rbind(fit1, fit2)
+rm(fit1)
+rm(fit2)
+gc()
 
 bins <- seq(20, 105, by=2)
 binned.age <- cut(elsa$age, bins, include.lowest=TRUE)

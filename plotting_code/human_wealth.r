@@ -66,7 +66,15 @@ binned.data$upper.damage <- binned.data$se.damage+binned.data$mean.damage
 
 binned.data <- na.omit(binned.data)
 
-fit <- as_draws_df(readRDS("../fits/long_human_fit.RDS")$draws(c("lambda_r", "lambda_d")))
+# read stan fits and combine chains
+fit1 <- as_draws_df(readRDS("../fits/long_human_fit_chain1.RDS")$draws(c("lambda_r", "lambda_d", "sampled_n")))
+fit2 <- as_draws_df(readRDS("../fits/long_human_fit_chain2.RDS")$draws(c("lambda_r", "lambda_d", "sampled_n")))
+fit2$.chain <- 2
+fit2$.draw <- max(fit1$.draw) + fit2$.draw + 1
+fit <- rbind(fit1, fit2)
+rm(fit1)
+rm(fit2)
+gc()
 
 baseline.bins <- seq(50, 90, by=4)
 binned.age <- cut(elsa.test$age, bins, include.lowest=TRUE)

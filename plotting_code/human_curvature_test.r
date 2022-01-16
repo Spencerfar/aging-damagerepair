@@ -48,8 +48,15 @@ bins <- seq(20, 105, by=2)
 bins.time <- seq(0, 20, by=2)
 elsa.na$baseline.num <- as.numeric(elsa.na$baseline.bin)
 
-
-fit <- as_draws_df(readRDS("../fits/long_human_fit.RDS")$draws(c("lambda_r", "lambda_d", "deriv_r", "deriv_d", "deriv_r_f", "deriv_d_f")))
+# read stan fits and combine chains
+fit1 <- as_draws_df(readRDS("../fits/long_human_fit_chain1.RDS")$draws(c("lambda_r", "lambda_d", "deriv_r", "deriv_d", "deriv_r_f", "deriv_d_f")))
+fit2 <- as_draws_df(readRDS("../fits/long_human_fit_chain2.RDS")$draws(c("lambda_r", "lambda_d", "deriv_r", "deriv_d", "deriv_r_f", "deriv_d_f")))
+fit2$.chain <- 2
+fit2$.draw <- max(fit1$.draw) + fit2$.draw + 1
+fit <- rbind(fit1, fit2)
+rm(fit1)
+rm(fit2)
+gc()
 
 
 baseline.bins <- seq(50, 90, by=4)

@@ -9,7 +9,9 @@ Instead of simply measuring the health state as the count of binary health defic
 # Documentation
 A python package to extract counts of damaged and repaired binary health variables between longitudinal time-points (as in the above schematic) is available in damagerepair-counts/. It is installed with setup.py.
 
-Joint models of survival and longitudinal repair and damage counts written in Stan are available in models/. For each of the datasets, these are fit by running fit_mouse_1.r, fit_mouse_2.r, and fit_mouse_3.r. A longitudinal model for human repair and damage counts is fit by running fit_human.r. 
+Joint models of survival and longitudinal repair and damage counts written in Stan are available in models/. For each of the datasets, these are fit by running fit_mouse_1.r, fit_mouse_2.r, and fit_mouse_3.r. A longitudinal model for human repair and damage counts is fit by running fit_human.r.
+
+Fitting the mouse models takes a few hours each (with all chains running parallel in time). Fitting the human data takes 12-15 hours using 40 CPU cores for a single chain. 
 
 Bayesian spline models for interval censored survival data written in Stan are also available in models/. These are fit in plotting_code/mouse_timescales.r and plotting_code/human_timescales.r.
 
@@ -57,7 +59,7 @@ Human data from the English Longitudinal Study of Aging are used, which can be a
 The code used to clean and pre-process these datasets is available in clean_datasets/.
 
 # Demo
-Running setup_demo.sh in demo/ will download and prepare mouse dataset 3. The model for this dataset can then be fit by running fit_mouse_3.r. 
+Running setup_demo.sh in demo/ will download and prepare mouse dataset 3. The model for this dataset can then be fit by running fit_mouse_3.r. Fitting this model may take a couple hours.
 
 # Citation
 Pre-print out soon.

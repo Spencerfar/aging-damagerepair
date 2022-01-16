@@ -35,14 +35,23 @@ elsa$pdamage <- (elsa$damage/(elsa$N - elsa$n))/elsa$delta.t
 
 bins <- seq(20, 105, by=3)
 
-fit <- as_draws_df(readRDS("../fits/long_human_fit.RDS")$draws(c("lambda_r", "lambda_d")))
+# read stan fits and combine chains
+fit1 <- as_draws_df(readRDS("../fits/long_human_fit_chain1.RDS")$draws(c("lambda_r", "lambda_d")))
+fit2 <- as_draws_df(readRDS("../fits/long_human_fit_chain2.RDS")$draws(c("lambda_r", "lambda_d")))
+fit2$.chain <- 2
+fit2$.draw <- max(fit1$.draw) + fit2$.draw + 1
+fit <- rbind(fit1, fit2)
+rm(fit1)
+rm(fit2)
+gc()
+gc()
 
 baseline.bins <- seq(50, 90, by=4)
 binned.age <- cut(elsa$age, bins, include.lowest=TRUE)
 binned.age <- midpoints(binned.age)+1.5
 
 repair.wealth.corr.med <- fit %>%
-    spread_draws(lambda_r[n], n = 100) %>%
+    spread_draws(lambda_r[n]) %>%
     group_by(.draw) %>%
     mutate(sex = elsa[n, 'sex']$sex) %>%
     mutate(id = elsa[n, 'id']$id) %>%
@@ -61,8 +70,6 @@ repair.wealth.corr.med <- fit %>%
     ungroup() %>%
     group_by(sex, age, baseline.bin) %>%
     median_hdci(corr_r, .width=0.95)
-
-repair.wealth.corr.med %>%as.data.frame()
 
 repair.corr.plot <- ggplot() +
     geom_lineribbon(data = repair.wealth.corr.med, mapping = aes(x = age, y = corr_r, ymin = .lower, ymax=.upper),
@@ -86,6 +93,7 @@ repair.corr.plot <- ggplot() +
         plot.margin = unit(c(0, 0, 0, 0), "cm")) + ggtitle("e) ELSA humans")
 
 rm(repair.wealth.corr.med)
+gc()
 gc()
 
 
