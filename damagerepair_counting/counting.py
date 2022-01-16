@@ -28,9 +28,10 @@ def counting(data_raw, deficits, id_column, time_column, deaths = None, death_co
     if deaths is not None:
         data['status'] = np.nan
         data['death.age'] = np.nan
-    
-    for d in ['d%d'%i for i in range(len(deficits))]:
-        data[d] = np.nan
+
+    if deficits != ['d%d'%i for i in range(len(deficits))]:
+        for d in ['d%d'%i for i in range(len(deficits))]:
+            data[d] = np.nan
     
     for d in ['d%d.r'%i for i in range(len(deficits))]:
         data[d] = np.nan
