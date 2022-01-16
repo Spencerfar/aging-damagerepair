@@ -1,7 +1,11 @@
 import numpy as np
 import pandas as pd
+import os
 from pyreadstat import read_sav
 from damagerepair_counting.counting import counting
+
+if not os.path.exists('../datasets/'):
+    os.makedirs('../datasets/')
 
 data = pd.read_csv('extracted_elsa.csv')
 folder = "~/Downloads/UKDA-5050-spss/spss/spss24/"

@@ -1,7 +1,11 @@
 import pandas as pd
 import numpy as np
 import argparse
+import os
 from damagerepair_counting.counting import counting
+
+if not os.path.exists('../datasets/'):
+    os.makedirs('../datasets/')
 
 parser = argparse.ArgumentParser('Clean Schultz')
 parser.add_argument('--folder', type=str, default = '../../step_data/')

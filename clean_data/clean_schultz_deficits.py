@@ -1,5 +1,9 @@
 import pandas as pd
 import numpy as np
+import os
+
+if not os.path.exists('../datasets/'):
+    os.makedirs('../datasets/')
 
 ##### read data
 data = pd.read_csv('../../step_data/Schultz.csv')

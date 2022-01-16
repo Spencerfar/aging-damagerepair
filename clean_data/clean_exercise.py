@@ -1,6 +1,10 @@
 import pandas as pd
 import numpy as np
+import os
 from damagerepair_counting.counting import counting
+
+if not os.path.exists('../datasets/'):
+    os.makedirs('../datasets/')
 
 ##### read data
 data = pd.read_csv('../../step_data/Exercise.csv')
