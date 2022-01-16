@@ -6,6 +6,9 @@ library(statmod)
 library(abind)
 library(caret)
 
+# create folder for fits
+if (!dir.exists('fits')) {dir.create('fits')}
+
 ### setup data 
 mice <- read.csv('datasets/schultz_data.csv', header = TRUE, sep = ",")
 mice.surv <- read.csv('datasets/schultz_surv_data.csv', header = TRUE, sep = ",")

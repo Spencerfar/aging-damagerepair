@@ -4,6 +4,9 @@ library(splines2)
 library(cmdstanr)
 set_cmdstan_path("~/Downloads/cmdstan-2.26.0/")
 
+# create folder for fits
+if (!dir.exists('fits')) {dir.create('fits')}
+
 elsa <- read.csv('datasets/human_data.csv', header = TRUE, sep = ",")
 
 elsa$id <- as.character(elsa$id)
