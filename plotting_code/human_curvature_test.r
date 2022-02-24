@@ -64,7 +64,7 @@ binned.age <- cut(elsa.test$age, bins, include.lowest=TRUE)
 binned.age <- midpoints(binned.age)+1
 
 curv.plot.terms.control <- fit %>%
-    spread_draws(lambda_r[n], lambda_d[n], deriv_r[n], deriv_r_f[n], deriv_d[n], deriv_d_f[n], n = 1600) %>%
+    spread_draws(lambda_r[n], lambda_d[n], deriv_r[n], deriv_r_f[n], deriv_d[n], deriv_d_f[n]) %>%
     group_by(.draw) %>%
     mutate(sex = elsa.test[n, 'sex']$sex) %>%
     mutate(age = binned.age[n]) %>%
@@ -80,7 +80,7 @@ curv.plot.terms.control <- fit %>%
 
 
 curv.plot.terms.control.pval <- fit %>%
-    spread_draws(lambda_r[n], lambda_d[n], deriv_r[n], deriv_r_f[n], deriv_d[n], deriv_d_f[n], n = 1600) %>%
+    spread_draws(lambda_r[n], lambda_d[n], deriv_r[n], deriv_r_f[n], deriv_d[n], deriv_d_f[n]) %>%
     group_by(.draw) %>%
     mutate(sex = elsa.test[n, 'sex']$sex) %>%
     mutate(age = binned.age[n]) %>%
