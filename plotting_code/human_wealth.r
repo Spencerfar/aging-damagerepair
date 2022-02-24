@@ -111,10 +111,16 @@ damage <- fit %>%
     summarize(lambda_d=mean(lambda_d)) %>%
     ungroup() %>% as.data.frame()
 
+# figure source data
 levels(binned.data$baseline.bin) <- c('Baseline age: [50,60)','[60,70)','[70,80)','[80,90)')
 levels(repair$baseline.bin) <- c('Baseline age: [50,60)','[60,70)','[70,80)','[80,90)')
 levels(damage$baseline.bin) <- c('Baseline age: [50,60)','[60,70)','[70,80)','[80,90)')
 
+
+# figure source data
+write.csv(binned.data, '../figure_data/supplemental_figure5/human_binned_rates_wealth.csv')
+write.csv(repair, '../figure_data/supplemental_figure5/human_repair_rate_wealth.csv')
+write.csv(damage, '../figure_data/supplemental_figure5/human_damage_rate_wealth.csv')
 
 repair.rates <- ggplot() +
     facet_grid(sex~baseline.bin,scales='free') + theme_cowplot() +
@@ -174,8 +180,15 @@ ggsave("../plots/human_wealth_rates.pdf", img, width=8, height=4)
 rm(fit)
 gc()
 
-fit <- as_draws_df(readRDS("../fits/long_human_fit.RDS")$draws(c("sampled_n")))
-
+# read stan fits and combine chains
+fit1 <- as_draws_df(readRDS("../fits/long_human_fit_chain1.RDS")$draws(c("sampled_n")))
+fit2 <- as_draws_df(readRDS("../fits/long_human_fit_chain2.RDS")$draws(c("sampled_n")))
+fit2$.chain <- 2
+fit2$.draw <- max(fit1$.draw) + fit2$.draw + 1
+fit <- rbind(fit1, fit2)
+rm(fit1)
+rm(fit2)
+gc()
 
 binned.data <- elsa %>% 
     mutate(age = cut(age, bins, include.lowest=TRUE)) %>%
@@ -213,6 +226,9 @@ f <- fit %>%
 levels(f$baseline.bin) <- c('Baseline age: [50,60)','[60,70)','[70,80)','[80,90)')
 levels(binned.data$baseline.bin) <- c('Baseline age: [50,60)','[60,70)','[70,80)','[80,90)')
 
+# figure source data
+write.csv(binned.data, '../figure_data/supplemental_figure5/human_binned_f_wealth.csv')
+write.csv(f, '../figure_data/supplemental_figure5/human_f_wealth.csv')
 
 f.plot <- ggplot() +
     facet_grid(sex~baseline.bin,scales='free') + theme_cowplot() +

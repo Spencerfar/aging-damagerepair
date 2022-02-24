@@ -52,13 +52,13 @@ fdot.plot <- fit %>%
     mutate(dotdotf = -dotf*(lambda_d+lambda_r) - f*(deriv_r + dotf*deriv_r_f) + (1-f)*(deriv_d + dotf*deriv_d_f))  %>%
     mutate(term.r =  - f*deriv_r - dotf*lambda_r) %>%
     mutate(term.d =  (1-f)*deriv_d - dotf*lambda_d) %>%
-    mutate(ratio = term.d - term.r) %>%
+    mutate(diff = term.d - term.r) %>%
     ungroup() %>%
     group_by(sex, treatment, age, .draw) %>%
-    summarize(ratio = mean(ratio)) %>%
+    summarize(diff = mean(diff)) %>%
     ungroup() %>%
     group_by(sex, treatment, age) %>%
-    median_hdci(ratio, .width = 0.95)
+    median_hdci(diff, .width = 0.95)
 
 
 fdot.plot$sex <- as.factor(fdot.plot$sex)
@@ -69,10 +69,12 @@ levels(fdot.plot$sex) <- c('Female', 'Male')
 
 fdot.plot <- fdot.plot[fdot.plot$treatment=='Control',]
 
+write.csv(fdot.plot, '../figure_data/supplemental_figure3/mouse1_curvature_test.csv')
+
 terms.enalapril <- ggplot() +
-    geom_errorbar(data=fdot.plot, mapping=aes(x=age, y=ratio, ymin=.lower, ymax=.upper, fill=sex, color=sex)) +
+    geom_errorbar(data=fdot.plot, mapping=aes(x=age, y=diff, ymin=.lower, ymax=.upper, fill=sex, color=sex)) +
     #geom_line(data=fdot.plot, mapping=aes(x=age, y=ratio), alpha=1, size=1.75, color='white') +
-    geom_point(data=fdot.plot, mapping=aes(x=age, y=ratio, color=sex), alpha=1, size=1.25) +
+    geom_point(data=fdot.plot, mapping=aes(x=age, y=diff, color=sex), alpha=1, size=1.25) +
     geom_hline(yintercept = 0, linetype="dotted") +
     theme_cowplot() + theme(
         strip.background = element_blank(),
@@ -132,13 +134,13 @@ fdot.plot <- fit %>%
     mutate(dotdotf = -dotf*(lambda_d+lambda_r) - f*(deriv_r + dotf*deriv_r_f) + (1-f)*(deriv_d + dotf*deriv_d_f))  %>%
     mutate(term.r =  - f*deriv_r - dotf*lambda_r) %>%
     mutate(term.d =  (1-f)*deriv_d - dotf*lambda_d) %>%
-    mutate(ratio = term.d - term.r) %>%
+    mutate(diff = term.d - term.r) %>%
     ungroup() %>%
     group_by(sex, exercise, age, .draw) %>%
-    summarize(ratio = mean(ratio)) %>%
+    summarize(diff = mean(diff)) %>%
     ungroup() %>%
     group_by(sex, exercise, age) %>%
-    median_hdci(ratio, .width = 0.95)
+    median_hdci(diff, .width = 0.95)
 
 fdot.plot$exercise <- as.factor(fdot.plot$exercise)
 fdot.plot$sex <- as.factor(fdot.plot$sex)
@@ -148,10 +150,12 @@ levels(fdot.plot$sex) <- c('Female', 'Male')
 fdot.plot <- fdot.plot[fdot.plot$exercise=='Control',]
 
 
+write.csv(fdot.plot, '../figure_data/supplemental_figure3/mouse2_curvature_test.csv')
+
 terms.exercise <- ggplot() +
-    geom_errorbar(data=fdot.plot, mapping=aes(x=age, y=ratio, ymin=.lower, ymax=.upper, fill=sex, color=sex)) +
+    geom_errorbar(data=fdot.plot, mapping=aes(x=age, y=diff, ymin=.lower, ymax=.upper, fill=sex, color=sex)) +
     #geom_line(data=fdot.plot, mapping=aes(x=age, y=ratio), alpha=1, size=1.75, color='white') +
-    geom_point(data=fdot.plot, mapping=aes(x=age, y=ratio, color=sex), alpha=1, size=1.25) +
+    geom_point(data=fdot.plot, mapping=aes(x=age, y=diff, color=sex), alpha=1, size=1.25) +
     geom_hline(yintercept = 0, linetype="dotted") +
     theme_cowplot() + theme(
         strip.background = element_blank(),
@@ -204,19 +208,22 @@ fdot.plot <- fit %>%
     mutate(dotdotf = -dotf*(lambda_d+lambda_r) - f*(deriv_r + dotf*deriv_r_f) + (1-f)*(deriv_d + dotf*deriv_d_f))  %>%
     mutate(term.r = -dotf*lambda_r- f*deriv_r) %>%
     mutate(term.d = -dotf*lambda_d + (1-f)*deriv_d) %>%
-    mutate(ratio = term.d - term.r) %>%
+    mutate(diff = term.d - term.r) %>%
     ungroup() %>%
     group_by(sex, age, .draw) %>%
-    summarize(ratio = mean(ratio)) %>%
+    summarize(diff = mean(diff)) %>%
     ungroup() %>%
     group_by(sex, age) %>%
-    median_hdci(ratio, .width = 0.95)
+    median_hdci(diff, .width = 0.95)
 
+
+
+write.csv(fdot.plot, '../figure_data/supplemental_figure3/mouse3_curvature_test.csv')
 
 terms.schultz <- ggplot() +
-    geom_errorbar(data=fdot.plot, mapping=aes(x=age, y=ratio, ymin=.lower, ymax=.upper, fill=sex, color=sex)) +
+    geom_errorbar(data=fdot.plot, mapping=aes(x=age, y=diff, ymin=.lower, ymax=.upper, fill=sex, color=sex)) +
     #geom_line(data=fdot.plot, mapping=aes(x=age, y=ratio), alpha=1, size=1.75, color='white') +
-    geom_point(data=fdot.plot, mapping=aes(x=age, y=ratio, color=sex), alpha=1, size=1.25) +
+    geom_point(data=fdot.plot, mapping=aes(x=age, y=diff, color=sex), alpha=1, size=1.25) +
     geom_hline(yintercept = 0, linetype="dotted") +
     theme_cowplot() + theme(
         strip.background = element_blank(),

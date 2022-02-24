@@ -122,6 +122,9 @@ for (g in unique(mice$group)) {
 
 combined.fit <- do.call(rbind, combined.list)
 
+# save figure source data
+write.csv(combined.fit, '../figure_data/figure5/mouse1_repair_timescale.csv')
+
 enalapril.repair <- ggplot() +
 	  geom_step(data = combined.fit,
                            mapping=aes(x = time, y= survival, 
@@ -261,6 +264,8 @@ for (g in unique(mice$group)) {
 
 combined.fit <- do.call(rbind, combined.list)
 
+# save figure source data
+write.csv(combined.fit, '../figure_data/figure5/mouse1_damage_timescale.csv')
 
 enalapril.damage <- ggplot() +
 	  geom_step(data = combined.fit,
@@ -400,6 +405,9 @@ boundary.knots <- c(0, max(selected$diff.right[is.finite(selected$diff.right)])+
 }
 
 combined.fit <- do.call(rbind, combined.list)
+
+# save figure source data
+write.csv(combined.fit, '../figure_data/figure5/mouse2_repair_timescale.csv')
 
 exercise.repair <- ggplot() +
 	  geom_step(data = combined.fit,
@@ -541,6 +549,9 @@ for (g in unique(mice$group)) {
 
 combined.fit <- do.call(rbind, combined.list)
 
+# save figure source data
+write.csv(combined.fit, '../figure_data/figure5/mouse2_damage_timescale.csv')
+
 exercise.damage <- ggplot() +
 	  geom_step(data = combined.fit,
                            mapping=aes(x = time, y=survival, 
@@ -661,6 +672,9 @@ boundary.knots <- c(0, max(selected$diff.right[is.finite(selected$diff.right)])+
 
 combined.fit <- do.call(rbind, combined.list)
 
+# save figure source data
+write.csv(combined.fit, '../figure_data/figure5/mouse3_repair_timescale.csv')
+
 schultz.repair <- ggplot() +
 	  geom_step(data = combined.fit,
                            mapping=aes(x = time, y=survival),color='#1c9099',
@@ -775,6 +789,8 @@ boundary.knots <- c(0, max(selected$diff.right[is.finite(selected$diff.right)])+
 
 combined.fit <- do.call(rbind, combined.list)
 
+# save figure source data
+write.csv(combined.fit, '../figure_data/figure5/mouse3_damage_timescale.csv')
 
 schultz.damage <- ggplot() +
 	  geom_step(data = combined.fit,

@@ -69,17 +69,26 @@ enalapril.diff.test <- fit %>%
     summarize(diff = mean(diff)) %>%
     ungroup() %>%
     group_by(sex, treatment, age) %>%
-    summarize(p = mean(diff > 0)) %>% as.data.frame()
+    summarize(p = 1 - mean(diff > 0)) %>% as.data.frame()
 enalapril.diff.test
-enalapril.text <- data.frame(sex=c('Female', 'Male'), label = c('', '$p<0.05$ for age$<22$'))
+enalapril.text <- data.frame(sex=c('Female', 'Male'), label = c('', '$p<0.05$ for age$<23$'))
 
 terms.enalapril$sex <- as.factor(terms.enalapril$sex)
 terms.enalapril$treatment <- as.factor(terms.enalapril$treatment)
 levels(terms.enalapril$sex) <- c('Female', 'Male')
 levels(terms.enalapril$treatment) <- c('Control', 'Enalapril')
+enalapril.diff.test$sex <- as.factor(enalapril.diff.test$sex)
+enalapril.diff.test$treatment <- as.factor(enalapril.diff.test$treatment)
+levels(enalapril.diff.test$sex) <- c('Female', 'Male')
+levels(enalapril.diff.test$treatment) <- c('Control', 'Enalapril')
 
 # select only control
 terms.enalapril <- terms.enalapril[terms.enalapril$treatment=='Control',]
+
+
+# save figure source data
+write.csv(terms.enalapril, '../figure_data/figure3/mouse1_curvature_terms.csv')
+write.csv(enalapril.diff.test[enalapril.diff.test$treatment=='Control',], '../figure_data/figure3/mouse1_curvature_terms_pvals.csv')
 
 plot.enalapril <- ggplot() +
     geom_line(data=terms.enalapril, mapping=aes(x=age, y=term.d, group=interaction(treatment,.draw), color='Damage rate\n terms'), alpha=0.1) +
@@ -174,7 +183,7 @@ exercise.diff.test <- fit %>%
     summarize(diff = mean(diff)) %>%
     ungroup() %>%
     group_by(sex, treatment, age) %>%
-    summarize(p = mean(diff > 0)) %>% as.data.frame()
+    summarize(p = 1 - mean(diff > 0)) %>% as.data.frame()
 
 exercise.diff.test
 exercise.text <- data.frame(sex=c('Female', 'Male'), label = c('$p<0.05$ for all ages', ''))
@@ -183,6 +192,15 @@ terms.exercise$treatment <- as.factor(terms.exercise$treatment)
 terms.exercise$sex <- as.factor(terms.exercise$sex)
 levels(terms.exercise$sex) <- c('Female', 'Male')
 levels(terms.exercise$treatment) <- c('Control', 'Exercise')
+exercise.diff.test$treatment <- as.factor(exercise.diff.test$treatment)
+exercise.diff.test$sex <- as.factor(exercise.diff.test$sex)
+levels(exercise.diff.test$sex) <- c('Female', 'Male')
+levels(exercise.diff.test$treatment) <- c('Control', 'Exercise')
+
+# save figure source data
+write.csv(terms.exercise, '../figure_data/figure3/mouse2_curvature_terms.csv')
+write.csv(exercise.diff.test[exercise.diff.test$treatment=='Control',], '../figure_data/figure3/mouse2_curvature_terms_pvals.csv')
+
 
 # select only control
 terms.exercise <- terms.exercise[terms.exercise$treatment=='Control',]
@@ -274,10 +292,14 @@ schultz.diff.test <- fit %>%
     median_hdci(diff, .width = 0.95) %>%
     ungroup() %>%
     group_by(sex, age) %>%
-    summarize(p = mean(diff > 0)) %>% as.data.frame()
+    summarize(p = 1 - mean(diff > 0)) %>% as.data.frame()
 
 schultz.diff.test
 schultz.text <- data.frame(sex=c('Male'), label = c('$p<0.05$ for ages$<35$'))
+
+# save figure source data
+write.csv(terms.schultz, '../figure_data/figure3/mouse3_curvature_terms.csv')
+write.csv(schultz.diff.test, '../figure_data/figure3/mouse3_curvature_terms_pvals.csv')
 
 
 plot.schultz <- ggplot() +

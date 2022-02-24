@@ -81,15 +81,23 @@ curv.diff.stats <- fdotdot.plot[fdotdot.plot$treatment == 'Control',]
 curv.diff.stats$diff <- fdotdot.plot[fdotdot.plot$treatment == 'Enalapril',]$dotdotf - fdotdot.plot[fdotdot.plot$treatment == 'Control',]$dotdotf
 curv.diff.stats <- curv.diff.stats %>% group_by(sex, age) %>% median_hdci(diff, .width=0.95) %>%
     mutate(significance = ifelse(.upper <= 0, '*', ''))
+
+names(fdotdot.plot.median)[names(fdotdot.plot.median) == 'dotdotf'] <- 'curvature'
+names(curv.diff.stats)[names(curv.diff.stats) == 'dotdotf'] <- 'curvature'
+
+# save figure source data
+write.csv(fdotdot.plot.median, '../figure_data/figure4/mouse1_curvature_interventions.csv')
+write.csv(curv.diff.stats, '../figure_data/figure4/mouse1_curvature_interventions_significance.csv')
+
 curv.diff.stats$y <- 0.02
 curv.diff.stats[curv.diff.stats$sex == 'Male',]$y <- 0.47
 
 enalapril.plot <- ggplot() +
-    geom_errorbar(data=fdotdot.plot.median, mapping=aes(x=age, y=dotdotf, fill=treatment,
+    geom_errorbar(data=fdotdot.plot.median, mapping=aes(x=age, y=curvature, fill=treatment,
                                                              color=treatment, ymin=.lower, ymax=.upper), alpha=1.0, width=0.5) +
     #geom_line(data=fdotdot.plot.median, mapping=aes(x=age, y=dotdotf,
     #      fill=treatment, color=treatment,group=treatment), alpha=1, size=1.75, color='white') +
-    geom_point(data=fdotdot.plot.median, mapping=aes(x=age, y=dotdotf,
+    geom_point(data=fdotdot.plot.median, mapping=aes(x=age, y=curvature,
          fill=treatment, color=treatment, group=treatment), alpha=1, size=1.00)+
     geom_hline(yintercept = 0, linetype="dotted") +
     theme_cowplot() + theme(
@@ -183,19 +191,27 @@ fdotdot.plot <- fit %>%
 curv.diff.stats <- fdotdot.plot[fdotdot.plot$exercise == 'no',]
 curv.diff.stats$diff <- fdotdot.plot[fdotdot.plot$exercise == 'yes',]$dotdotf - fdotdot.plot[fdotdot.plot$exercise == 'no',]$dotdotf
 curv.diff.stats <- curv.diff.stats %>% group_by(sex, age) %>% median_hdci(diff, .width=0.95) %>%  mutate(significance = ifelse(.upper <= 0, '*', ''))
-curv.diff.stats$y <- -0.17
-curv.diff.stats[curv.diff.stats$sex == 'M',]$y <- -0.22
+
 
 curv.diff.stats$sex <- as.factor(curv.diff.stats$sex)
 levels(curv.diff.stats$sex) <- c('Female', 'Male')
 
+names(fdotdot.plot.median)[names(fdotdot.plot.median) == 'dotdotf'] <- 'curvature'
+names(curv.diff.stats)[names(curv.diff.stats) == 'dotdotf'] <- 'curvature'
+
+# save figure source data
+write.csv(fdotdot.plot.median, '../figure_data/figure4/mouse2_curvature_interventions.csv')
+write.csv(curv.diff.stats, '../figure_data/figure4/mouse2_curvature_interventions_significance.csv')
+
+curv.diff.stats$y <- -0.17
+curv.diff.stats[curv.diff.stats$sex == 'M',]$y <- -0.22
 
 exercise.plot <- ggplot() +
-    geom_errorbar(data=fdotdot.plot.median, mapping=aes(x=age, y=dotdotf, fill=exercise,
+    geom_errorbar(data=fdotdot.plot.median, mapping=aes(x=age, y=curvature, fill=exercise,
                                                              color=exercise, ymin=.lower, ymax=.upper), alpha=1.0, width=0.2) +
     #geom_line(data=fdotdot.plot.median, mapping=aes(x=age, y=dotdotf,
     #      fill=exercise, color=exercise,group=exercise), alpha=1, size=1.75, color='white') +
-    geom_point(data=fdotdot.plot.median, mapping=aes(x=age, y=dotdotf,
+    geom_point(data=fdotdot.plot.median, mapping=aes(x=age, y=curvature,
          fill=exercise, color=exercise, group=exercise), alpha=1, size=1.00)+
     geom_hline(yintercept = 0, linetype="dotted") +
     theme_cowplot() + theme(

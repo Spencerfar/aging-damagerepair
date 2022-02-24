@@ -102,6 +102,14 @@ levels(full.damage.plot$treatment) <- c('Control', 'Enalapril')
 levels(full.f.plot$treatment) <- c('Control', 'Enalapril')
 levels(binned.data.rates$treatment) <- c('Control', 'Enalapril')
 
+
+# figure source data
+write.csv(binned.data.rates, '../figure_data/supplemental_figure4/mouse1_binned_data_interventions.csv')
+write.csv(full.repair.plot, '../figure_data/supplemental_figure4/mouse1_repair_rate_interventions.csv')
+write.csv(full.damage.plot, '../figure_data/supplemental_figure4/mouse1_damage_rate_interventions.csv')
+write.csv(full.f.plot, '../figure_data/supplemental_figure4/mouse1_f_interventions.csv')
+
+
 # plot repair
 enalapril.repair <- ggplot() +
     geom_point(binned.data.rates %>% filter(repair.num >= 5), mapping=aes(x=age, y=mean.repair, ymin=lower.repair, 
@@ -271,6 +279,12 @@ full.f.plot <- fit %>%
 levels(full.repair.plot$exercise) <- c('Control', 'Exercise')
 levels(full.damage.plot$exercise) <- c('Control', 'Exercise')
 levels(full.f.plot$exercise) <- c('Control', 'Exercise')
+
+# figure source data
+write.csv(binned.data.rates, '../figure_data/supplemental_figure4/mouse2_binned_data_interventions.csv')
+write.csv(full.repair.plot, '../figure_data/supplemental_figure4/mouse2_repair_rate_interventions.csv')
+write.csv(full.damage.plot, '../figure_data/supplemental_figure4/mouse2_damage_rate_interventions.csv')
+write.csv(full.f.plot, '../figure_data/supplemental_figure4/mouse2_f_interventions.csv')
 
 
 # plot repair

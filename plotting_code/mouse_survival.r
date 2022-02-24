@@ -154,10 +154,14 @@ enalapril.hazard[enalapril.hazard$.variable=='Damage rate',]$.value = enalapril.
 enalapril.hazard <- enalapril.hazard[enalapril.hazard$treatment=='Control', ]
 
 
+# save figure source data
+write.csv(enalapril.hazard %>% group_by(.variable, sex) %>% median_hdci(.value), '../figure_data/figure2/mouse1_hazards.csv')
+
+
 enalapril.hazard <- enalapril.hazard %>%
     mutate(color = '0') %>%
     ggplot() +
-    stat_eye(aes(x=.variable,y=.value,fill=sex),alpha=0.75, .width=c(0.95), position = position_dodge(width = 0.75)) +
+    stat_eye(aes(x=.variable,y=.value,fill=sex),alpha=0.75, .width=c(0.95), position = position_dodge(width = 0.75), point_interval=median_hdci) +
     geom_hline(yintercept = 0, linetype="dotted") + 
     theme_cowplot() + theme(
         strip.background = element_blank(),
@@ -263,9 +267,14 @@ exercise.hazard[exercise.hazard$.variable=='Damage rate',]$.value = exercise.haz
 
 exercise.hazard <- exercise.hazard[exercise.hazard$exercise=='Control', ]
 
+
+# save figure source data
+write.csv(exercise.hazard %>% group_by(.variable, sex) %>% median_hdci(.value), '../figure_data/figure2/mouse2_hazards.csv')
+
+
 exercise.hazard <- exercise.hazard %>%
     ggplot() +
-    stat_eye(aes(x=.variable,y=.value,fill=sex),alpha=0.75, .width=c(0.95), position = position_dodge(width = 0.75))+
+    stat_eye(aes(x=.variable,y=.value,fill=sex),alpha=0.75, .width=c(0.95), position = position_dodge(width = 0.75), point_interval=median_hdci)+
     geom_hline(yintercept = 0, linetype="dotted")  + 
     scale_fill_manual(values = sex.palette) +
     theme_cowplot() + theme(
@@ -328,12 +337,19 @@ sd.schultz <- fit %>% spread_draws(lambda_r[n], lambda_d[n]) %>%
     as.data.frame()
 sd.schultz <- as.numeric(sd.schultz[1,])
 
+
 schultz.hazard <- fit %>%
     spread_draws(gamma_rand[m]) %>%
     mutate(sex = 'Male') %>%
-    mutate(gamma_rand = gamma_rand * sd.schultz[m]) %>%
-    mutate(variable2 = c('Repair rate', 'Damage rate')[m]) %>% ggplot() +
-    stat_eye(aes(variable2, gamma_rand),alpha=0.75, .width=c(0.95), fill = sex.palette[2]) + geom_hline(yintercept = 0, linetype="dotted")   +
+    mutate(.value = gamma_rand * sd.schultz[m]) %>%
+    mutate(.variable = c('Repair rate', 'Damage rate')[m])
+
+
+# save figure source data
+write.csv(schultz.hazard %>% group_by(.variable, sex) %>% median_hdci(.value), '../figure_data/figure2/mouse3_hazards.csv')
+
+schultz.hazard <- schultz.hazard %>% ggplot() +
+    stat_eye(aes(.variable, .value),alpha=0.75, .width=c(0.95), fill = sex.palette[2], point_interval=median_hdci) + geom_hline(yintercept = 0, linetype="dotted")   +
     theme_cowplot() + theme(
         strip.background = element_blank(),
         axis.title=element_text(size=7),

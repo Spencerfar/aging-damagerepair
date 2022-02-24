@@ -171,6 +171,17 @@ levels(corr.repair.text$baseline.bin) <- c('Baseline age: [50,60)','[60,70)','[7
 levels(corr.damage.text$baseline.bin) <- c('Baseline age: [50,60)','[60,70)','[70,80)','[80,90)')
 
 
+# save figure source data
+full.plot.data <- repair
+full.plot.data$lambda_d <- damage$lambda_d
+full.plot.data <- subset(full.plot.data, select = -c(color, fill))
+write.csv(subset(binned.data, select = -c(color, fill)), '../figure_data/figure2/human_binned_rates.csv')
+write.csv(full.plot.data, '../figure_data/figure2/human_model_rates.csv')
+write.csv(corr.repair.text, '../figure_data/figure2/human_rates_correlation_repair.csv')
+write.csv(corr.damage.text, '../figure_data/figure2/human_rates_correlation_damage.csv')
+
+
+
 repair.rates <- ggplot() +
     facet_grid(.~baseline.bin,scales='free') + theme_cowplot() +
     geom_point(data = binned.data, mapping=aes(x=age, y=mean.repair, ymin=lower.repair, 
@@ -263,6 +274,10 @@ f <- fit %>%
 
 levels(binned.data$baseline.bin) <- c('Baseline age: [50,60)','[60,70)','[70,80)','[80,90)')
 levels(f$baseline.bin) <- c('Baseline age: [50,60)','[60,70)','[70,80)','[80,90)')
+
+# save figure source data
+write.csv(binned.data, '../figure_data/supplemental_figure2/human_binned_f.csv')
+write.csv(f, '../figure_data/supplemental_figure2/human_model_f.csv')
 
 
 f.plot <- ggplot() +

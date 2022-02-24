@@ -179,6 +179,9 @@ boundary.knots <- c(0, max(selected$diff.right[is.finite(selected$diff.right)])+
 
 combined.fit <- do.call(rbind, combined.list)
 
+# save figure source data
+write.csv(combined.fit, '../figure_data/figure5/human_repair_timescale.csv')
+
 wealth.repair <- ggplot() +
 	  geom_step(data = combined.fit,
                            mapping=aes(x = time, y=survival, 
@@ -348,6 +351,9 @@ boundary.knots <- c(0, max(selected$diff.right[is.finite(selected$diff.right)])+
 }
 
 combined.fit <- do.call(rbind, combined.list)
+
+# save figure source data
+write.csv(combined.fit, '../figure_data/figure5/human_damage_timescale.csv')
 
 wealth.damage <- ggplot() +
 	  geom_step(data = combined.fit,

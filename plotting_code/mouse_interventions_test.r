@@ -85,6 +85,14 @@ damage.diff.deriv.stats <- full.damage.plot.stats[full.damage.plot.stats$treatme
 damage.diff.deriv.stats$diff <- full.damage.plot.stats[full.damage.plot.stats$treatment == 'Enalapril',]$deriv_d - full.damage.plot.stats[full.damage.plot.stats$treatment == 'Control',]$deriv_d
 damage.diff.deriv.stats <- damage.diff.deriv.stats %>% group_by(sex, treatment, age) %>% median_hdci(diff, .width=0.95)
 
+
+# figure source data
+write.csv(subset(repair.diff.stats, select=-c(treatment)), '../figure_data/supplemental_figure4/mouse1_repair_rate_test.csv')
+write.csv(subset(damage.diff.stats, select=-c(treatment)), '../figure_data/supplemental_figure4/mouse1_damage_rate_test.csv')
+write.csv(subset(repair.diff.deriv.stats, select=-c(treatment)), '../figure_data/supplemental_figure4/mouse1_repair_slope_test.csv')
+write.csv(subset(damage.diff.deriv.stats, select=-c(treatment)), '../figure_data/supplemental_figure4/mouse1_damage_slope_test.csv')
+
+
 enalapril.repair <- ggplot() +
     geom_errorbar(data=repair.diff.stats, mapping=aes(x=age, y=diff,
                                                              color=sex, ymin=.lower, ymax=.upper, fill=sex), alpha=1.0) +
@@ -254,6 +262,13 @@ repair.diff.deriv.stats <- repair.diff.deriv.stats %>% group_by(sex, exercise, a
 damage.diff.deriv.stats <- full.damage.plot.stats[full.damage.plot.stats$exercise == 'no',]
 damage.diff.deriv.stats$diff <- full.damage.plot.stats[full.damage.plot.stats$exercise == 'yes',]$deriv_d - full.damage.plot.stats[full.damage.plot.stats$exercise == 'no',]$deriv_d
 damage.diff.deriv.stats <- damage.diff.deriv.stats %>% group_by(sex, exercise, age) %>% median_hdci(diff, .width=0.95)
+
+
+# figure source data
+write.csv(subset(repair.diff.stats, select=-c(exercise)), '../figure_data/supplemental_figure4/mouse2_repair_rate_test.csv')
+write.csv(subset(damage.diff.stats, select=-c(exercise)), '../figure_data/supplemental_figure4/mouse2_damage_rate_test.csv')
+write.csv(subset(repair.diff.deriv.stats, select=-c(exercise)), '../figure_data/supplemental_figure4/mouse2_repair_slope_test.csv')
+write.csv(subset(damage.diff.deriv.stats, select=-c(exercise)), '../figure_data/supplemental_figure4/mouse2_damage_slope_test.csv')
 
 exercise.repair <- ggplot() +
     geom_errorbar(data=repair.diff.stats, mapping=aes(x=age, y=diff, ymin=.lower, ymax=.upper, fill=sex,color=sex), alpha=1.0) +

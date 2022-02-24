@@ -64,7 +64,7 @@ binned.age <- cut(elsa.test$age, bins, include.lowest=TRUE)
 binned.age <- midpoints(binned.age)+1
 
 curv.plot.terms.control <- fit %>%
-    spread_draws(lambda_r[n], lambda_d[n], deriv_r[n], deriv_r_f[n], deriv_d[n], deriv_d_f[n]) %>%
+    spread_draws(lambda_r[n], lambda_d[n], deriv_r[n], deriv_r_f[n], deriv_d[n], deriv_d_f[n], n = 1600) %>%
     group_by(.draw) %>%
     mutate(sex = elsa.test[n, 'sex']$sex) %>%
     mutate(age = binned.age[n]) %>%
@@ -78,7 +78,25 @@ curv.plot.terms.control <- fit %>%
     group_by(baseline.bin, sex, age) %>%
     median_hdci(diff, .width = 0.95)
 
+
+curv.plot.terms.control.pval <- fit %>%
+    spread_draws(lambda_r[n], lambda_d[n], deriv_r[n], deriv_r_f[n], deriv_d[n], deriv_d_f[n], n = 1600) %>%
+    group_by(.draw) %>%
+    mutate(sex = elsa.test[n, 'sex']$sex) %>%
+    mutate(age = binned.age[n]) %>%
+    mutate(baseline.bin = elsa.test[n,'baseline.bin']$baseline.bin) %>%
+    mutate(diff = ((1-(elsa.test[n,'f']$f))*(deriv_d+deriv_d_f*f.sd) - ((1 - (elsa.test[n,'f']$f))*lambda_d - (elsa.test[n,'f']$f)*lambda_r)*lambda_d) - (-(elsa.test[n,'f']$f)*(deriv_r +deriv_r_f*f.sd) -  ((1 - (elsa.test[n,'f']$f))*lambda_d - (elsa.test[n,'f']$f)*lambda_r)*lambda_r) ) %>%
+    filter(elsa.test[n,'n']$n > 0) %>%
+    ungroup() %>%
+    group_by(baseline.bin, sex, age, .draw) %>%
+    summarize(diff=mean(diff, na.rm=TRUE)) %>%
+    ungroup() %>%
+    group_by(baseline.bin, sex, age) %>%
+    summarize(p = 1 - mean(diff > 0)) %>% as.data.frame()
+
 levels(curv.plot.terms.control$baseline.bin) <- c('Baseline age: [50,60)','[60,70)','[70,80)','[80,90)')
+write.csv(curv.plot.terms.control.pval, '../figure_data/figure3/human_curvature_terms_pvals.csv')
+write.csv(curv.plot.terms.control, '../figure_data/supplemental_figure3/human_curvature_terms_test.csv')
 
 fdotdot.terms.control <- ggplot() +
     geom_errorbar(data=curv.plot.terms.control, mapping=aes(x=age, y=diff, color=sex, ymin=.lower, ymax=.upper, fill=sex)) +
