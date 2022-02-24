@@ -15,8 +15,8 @@ To use, provide input data as a pandas dataframe "data_raw", a list of deficits 
 
 from damagerepair_counting.counting import counting
 
-counting(data_raw, deficits, id_column, time_column,
-         deaths = None, death_column = None, status_column = None)
+data = counting(data_raw, deficits, id_column, time_column,
+                deaths = None, death_column = None, status_column = None)
 
 ```
 
