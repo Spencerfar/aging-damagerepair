@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import os
-from damagerepair_counting.counting import counting
+from damagerepair_counting import counting
 
 if not os.path.exists('../datasets/'):
     os.makedirs('../datasets/')

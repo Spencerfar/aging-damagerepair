@@ -13,7 +13,7 @@ To use, provide input data as a pandas dataframe "data_raw", a list of deficits 
 
 ```python
 
-from damagerepair_counting.counting import counting
+from damagerepair_counting import counting
 
 data = counting(data_raw, deficits, id_column, time_column,
                 deaths = None, death_column = None, status_column = None)
@@ -70,7 +70,7 @@ Human data from the English Longitudinal Study of Aging are used, which can be a
 The code used to clean and pre-process these datasets is available in clean_datasets/.
 
 # Demo
-Running setup_demo.sh in demo/ will download and prepare mouse dataset 3. The model for this dataset can then be fit by running fit_mouse_3.r. Fitting this model may take a couple hours.
+Running setup_demo.sh in demo/ will download and prepare mouse dataset 3 and save it in the datasets/ folder. The model for this dataset can then be fit by running fit_mouse_3.r. Fitting this model may take a couple hours.
 
 # Citation
 Pre-print out soon.
