@@ -1,5 +1,5 @@
 # Damage and repair processes in aging
-Instead of simply measuring the health state as the count of binary health deficits as in a Frailty Index, we estimate damage and repair processes.
+Instead of simply measuring the health state as the count of binary health deficits as in a Frailty Index, we estimate damage and repair processes. Pre-print available at https://www.biorxiv.org/content/10.1101/2022.03.01.482443v1.
 
 <p align="center"> 
 <img src="diagrams/transitions_schematic_combined.png" width="799" height="343">
@@ -73,4 +73,17 @@ The code used to clean and pre-process these datasets is available in clean_data
 Running setup_demo.sh in demo/ will download and prepare mouse dataset 3 and save it in the datasets/ folder. The model for this dataset can then be fit by running fit_mouse_3.r. Fitting this model may take a couple hours.
 
 # Citation
-Pre-print out soon.
+Please cite if this is useful
+
+```
+@article {Farrell2022,
+	author = {Farrell, S and Kane, AE and Bisset, E and Howlett, SE and Rutenberg, AD},
+	title = {Measurements of damage and repair in aging mice and humans reveals that robustness and resilience decrease with age, operate over broad timescales, and are affected differently by interventions},
+	elocation-id = {2022.03.01.482443},
+	year = {2022},
+	doi = {10.1101/2022.03.01.482443},
+	URL = {https://www.biorxiv.org/content/early/2022/03/03/2022.03.01.482443},
+	eprint = {https://www.biorxiv.org/content/early/2022/03/03/2022.03.01.482443.full.pdf},
+	journal = {bioRxiv}
+}
+```
