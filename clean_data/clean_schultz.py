@@ -37,15 +37,17 @@ for label, group in data.groupby('Mouse ID'):
 # create binary deficits from fractional
 new_deficits = []
 for d in deficits:
+
+    new_deficit_columns = [d+str(i) for i in range(4)]
+    new_cols = pd.DataFrame(np.zeros((data.shape[0], 4)), columns=new_deficit_columns, index=data.index)
     
-    for i in range(4):
-        new_deficits.append(d + str(i))
-        data[d+str(i)] = 0
+    data = pd.concat((data, new_cols), axis=1)
+    new_deficits = new_deficits + new_deficit_columns
     
     for j in range(data[d].shape[0]):
         i=0
         while int(data.iloc[j].loc[d] * 4) > i:
-            data[d+str(i)].iloc[j] = 1
+            data.loc[data.index[j],d+str(i)] = 1
             i += 1
 deficits=new_deficits
 
