@@ -15,31 +15,31 @@ def counting(data_raw, deficits, id_column, time_column, deaths = None, death_co
         assert isinstance(death_column, str), 'death_column={} must be a string if a deaths dataframe is passed'.format(death_column)
         assert isinstance(status_column, str), 'status_column={} must be a string if a deaths dataframe is passed'.format(status_column)
     
-    data = data_raw.copy()
-    
-    data['time'] = np.nan
-    data['baseline.age'] = np.nan
-    data['repair.count'] = np.nan
-    data['damage.count'] = np.nan
-    data['delta.t'] = np.nan
-    data['deficit.count'] = np.nan
-    data['total.deficits'] = np.nan
+    data = data_raw.copy(deep=True)
 
+    
+    # add new columns to dataframe
+    new_cols = ['time', 'baseline.age', 'repair.count', 'damage.count', 'delta.t', 'deficit.count', 'total.deficits']
+    
     if deaths is not None:
-        data['status'] = np.nan
-        data['death.age'] = np.nan
-
-    if deficits != ['d%d'%i for i in range(len(deficits))]:
-        for d in ['d%d'%i for i in range(len(deficits))]:
-            data[d] = np.nan
+        new_cols = new_cols + ['status', 'death.age']
     
-    for d in ['d%d.r'%i for i in range(len(deficits))]:
-        data[d] = np.nan
+    new_deficits = ['d%d'%i for i in range(len(deficits))]
     
-    for d in ['d%d.d'%i for i in range(len(deficits))]:
-        data[d] = np.nan
+    new_cols = new_cols + new_deficits
+    
+    new_repair_deficits = ['d%d.r'%i for i in range(len(deficits))]
+    new_cols = new_cols + new_repair_deficits
+    
+    new_damage_deficits = ['d%d.d'%i for i in range(len(deficits))]
+    new_cols = new_cols + new_damage_deficits
 
-    for label, group in data.groupby([id_column]):
+    new_cols_df = pd.DataFrame(np.ones((data.shape[0], len(new_cols)))*np.nan, columns = new_cols, index=data.index)
+    data = pd.concat((data, new_cols_df), axis=1)
+    
+    
+    # go through each individual subject
+    for label, group in data_raw.groupby([id_column]):
     
         time = group[time_column] - group[time_column].iloc[0]
         
