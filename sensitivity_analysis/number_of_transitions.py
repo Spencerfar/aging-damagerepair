@@ -38,6 +38,9 @@ for d in deficits_full:
 ax[0].bar(np.arange(len(counts)), counts, tick_label = deficit)
 ax[0].set_xticklabels(deficit, rotation='vertical', fontsize=4)
 
+output_1 = pd.DataFrame({'deficit': deficit, 'repair count': counts})
+output_1.to_csv('../figure_data/figure5_supplement4/mouse1_repair_count.csv')
+
 ax[0].set_yticks([0,50,100,150])
 ax[0].set_yticklabels([0,50,100, 150], fontsize=6)
 
@@ -61,6 +64,9 @@ for d in deficits_full:
 
 ax[1].bar(np.arange(len(counts)), counts, tick_label = deficit)
 ax[1].set_xticklabels(deficit, rotation='vertical', fontsize=4)
+
+output_2 = pd.DataFrame({'deficit': deficit, 'repair count': counts})
+output_2.to_csv('../figure_data/figure5_supplement4/mouse2_repair_count.csv')
 
 ax[1].set_yticks([0,25,50,75])
 ax[1].set_yticklabels([0,25,50,75], fontsize=6)
@@ -87,6 +93,10 @@ for d in deficits_full:
 
 ax[2].bar(np.arange(len(counts)), counts, tick_label = deficit)
 ax[2].set_xticklabels(deficit, rotation='vertical', fontsize=4)
+
+
+output_3 = pd.DataFrame({'deficit': deficit, 'repair count': counts})
+output_3.to_csv('../figure_data/figure5_supplement4/mouse3_repair_count.csv')
 
 ax[2].set_yticks([0,25,50,75])
 ax[2].set_yticklabels([0,25,50,75], fontsize=6)
@@ -145,20 +155,15 @@ for d in deficits_full:
         counts.append(0)
 
 deficit = [int(d[1:]) for d in deficit]
-#print(deficit)
-#asdasdasd
 
-
-        
-#print(len(deficit), len(human_deficit_names))
 ax[3].bar(np.arange(len(counts)), counts, tick_label = human_deficit_names[deficit])
 ax[3].set_xticklabels(human_deficit_names[deficit], rotation='vertical', fontsize=4)
 ax[3].set_yticks([0,250,500,750,1000])
 ax[3].set_yticklabels([0,250,500,750,1000], fontsize=6)
 
 
-
-
+output_human = pd.DataFrame({'deficit': human_deficit_names[deficit], 'repair count': counts})
+output_human.to_csv('../figure_data/figure5_supplement4/human_repair_count.csv')
 
 
 plt.tight_layout()

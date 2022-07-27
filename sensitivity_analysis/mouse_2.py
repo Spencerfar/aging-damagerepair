@@ -74,10 +74,14 @@ index = np.argsort(counts)[::-1]
 ax[0].bar(np.arange(pruned_repair.shape[0]), counts[index], tick_label = pruned_repair[index])
 ax[0].set_xticklabels(pruned_repair[index], rotation='vertical', fontsize=7)
 
+output_repair = pd.DataFrame({'deficit': pruned_repair[index], 'pruned count': counts[index]})
+
 pruned_damage, counts = np.unique(pruned_damage, return_counts=True)
 index = np.argsort(counts)[::-1]
 ax[1].bar(np.arange(pruned_damage.shape[0]), counts[index], tick_label = pruned_damage[index])
 ax[1].set_xticklabels(pruned_damage[index], rotation='vertical', fontsize=7)
+
+output_damage = pd.DataFrame({'deficit': pruned_damage[index], 'pruned count': counts[index]})
 
 ax[0].set_xlabel('')
 ax[0].set_ylabel('Isolated repair pruned')
@@ -87,6 +91,9 @@ ax[1].set_ylabel('Isolated damage pruned')
 
 plt.tight_layout()
 plt.savefig('Mouse2_pruned.pdf')
+
+output_repair.to_csv('../figure_data/figure5_supplement4/mouse2_pruned_repair.csv')
+output_damage.to_csv('../figure_data/figure5_supplement4/mouse2_pruned_damage.csv')
 
 
 # create binary deficits from fractional
