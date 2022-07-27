@@ -30,25 +30,25 @@ R Packages used:
 ```
 R 4.1.0
 abind 1.4-5
-caret 6.0-90
+caret 6.0-92
 cmdstanr 0.4.0
 cowplot 1.1.1
-dplyr 1.0.7
-ggplot2 3.3.5
+dplyr 1.0.9
+ggplot2 3.3.6
 ggsci 2.9
-ggfortify 0.4.13
+ggfortify 0.4.14
 gridExtra 2.3
 glrt 2.0
-latex2exp 0.5.0
-pammtools 0.5.7
-posterior 1.1.0
-rstan 2.21.2
+latex2exp 0.9.4
+pammtools 0.5.8
+posterior 1.2.1
+rstan 2.21.5
 splines2 0.4.5
 statmod 1.4.36
 survival 3.2-11
 survminer 0.4.9
-tidybayes 3.0.1
-tidyr 1.1.4
+tidybayes 3.0.2
+tidyr 1.2.0
 ```
 
 Stan version 2.26.0 was used.
@@ -57,9 +57,9 @@ python packages used
 ```
 python 3.8.10
 pyreadstat 1.1.0
-pandas 1.2.1
-numpy 1.19.5
-matplotlib 3.5.1
+pandas 1.4.2
+numpy 1.22.4
+matplotlib 3.5.2
 ```
 
 # Datasets
