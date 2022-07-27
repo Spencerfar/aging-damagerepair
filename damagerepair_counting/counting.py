@@ -25,8 +25,8 @@ def counting(data_raw, deficits, id_column, time_column, deaths = None, death_co
         new_cols = new_cols + ['status', 'death.age']
     
     new_deficits = ['d%d'%i for i in range(len(deficits))]
-    
-    new_cols = new_cols + new_deficits
+    if any((True for x in new_deficits if x in new_cols)):
+        new_cols = new_cols + new_deficits
     
     new_repair_deficits = ['d%d.r'%i for i in range(len(deficits))]
     new_cols = new_cols + new_repair_deficits
@@ -90,5 +90,5 @@ def counting(data_raw, deficits, id_column, time_column, deaths = None, death_co
         
         for di,d in enumerate(['d%d.d'%i for i in range(len(deficits))]):
             data.loc[data[id_column] == label, d] = np.append(damaged_all[:,di],np.nan)
-    
+        
     return data
