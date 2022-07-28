@@ -20,6 +20,9 @@ data = counting(data_raw, deficits, id_column, time_column,
 
 ```
 
+The output of this approach is a pandas dataframe with columns "repair.count" and "damage.count" representing the number of new deficits repaired or damage between measurement times (with time-interval in column "delta.t"). This data is then used as input for damage/repair count models. 
+
+
 Joint models of survival and longitudinal repair and damage counts written in Stan are available in models/. For each of the datasets, these are fit by running fit_mouse_1.r, fit_mouse_2.r, and fit_mouse_3.r. A longitudinal model for human repair and damage counts is fit by running fit_human.r, which takes a command line argument for the chain ID.
 
 Fitting the mouse models takes a few hours each (with all chains running parallel in time). Fitting the human data takes 12-15 hours using 40 CPU cores for a single chain. 
