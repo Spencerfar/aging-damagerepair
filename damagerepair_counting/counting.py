@@ -24,16 +24,6 @@ def counting(data_raw, deficits, id_column, time_column, deaths = None, death_co
     if deaths is not None:
         new_cols = new_cols + ['status', 'death.age']
 
-    #new_deficits = ['d%d'%i for i in range(len(deficits))]
-    #if any((True for x in new_deficits if x in new_cols)):
-    #    new_cols = new_cols + new_deficits
-    
-    #new_repair_deficits = ['d%d.r'%i for i in range(len(deficits))]
-    #new_cols = new_cols + new_repair_deficits
-
-    #new_damage_deficits = ['d%d.d'%i for i in range(len(deficits))]
-    #new_cols = new_cols + new_damage_deficits
-
     new_cols_df = pd.DataFrame(np.ones((data.shape[0], len(new_cols)))*np.nan, columns = new_cols, index=data.index)
     data = pd.concat((data, new_cols_df), axis=1)
     
@@ -93,26 +83,7 @@ def counting(data_raw, deficits, id_column, time_column, deaths = None, death_co
 
         curr_id = curr_id + group.shape[0]
 
-        """
-        for di,d in enumerate(['d%d'%i for i in range(len(deficits))]):
-            data.loc[data[id_column] == label, d] = deficit_values[:,di]
-        
-        for di,d in enumerate(['d%d.r'%i for i in range(len(deficits))]):
-            data.loc[data[id_column] == label, d] = np.append(repaired_all[:,di],np.nan)
-        
-        for di,d in enumerate(['d%d.d'%i for i in range(len(deficits))]):
-            data.loc[data[id_column] == label, d] = np.append(damaged_all[:,di],np.nan)
-        """
-    """
-    for di,d in enumerate(['d%d'%i for i in range(len(deficits))]):
-        data[d] = deficit_values_list[:,di]
-        
-    for di,d in enumerate(['d%d.r'%i for i in range(len(deficits))]):
-        data[d] = repaired_all_list[:,di]
-        
-    for di,d in enumerate(['d%d.d'%i for i in range(len(deficits))]):
-        data[d] = damaged_all_list[:,di]
-    """
+    
     new_cols = ['d%d'%i for i in range(len(deficits))] + ['d%d.r'%i for i in range(len(deficits))]+ ['d%d.d'%i for i in range(len(deficits))]
     
     new_cols_vals = np.concatenate((deficit_values_list, repaired_all_list, damaged_all_list), axis=1)
