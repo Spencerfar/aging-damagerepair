@@ -88,8 +88,8 @@ def counting(data_raw, deficits, id_column, time_column, deaths = None, death_co
 
 
         deficit_values_list[curr_id:curr_id+group.shape[0]] = deficit_values
-        repaired_all_list[curr_id:curr_id+group.shape[0]] = np.append(repaired_all[:,di],np.nan)
-        damaged_all_list[curr_id:curr_id+group.shape[0]] = np.append(repaired_all[:,di],np.nan)
+        repaired_all_list[curr_id:curr_id+group.shape[0]] = np.append(repaired_all, np.ones((1, len(deficits))), axis=0)
+        damaged_all_list[curr_id:curr_id+group.shape[0]] = np.append(damaged_all, np.ones((1, len(deficits))), axis=0)
 
         curr_id = curr_id + group.shape[0]
 
