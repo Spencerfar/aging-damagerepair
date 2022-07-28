@@ -67,7 +67,7 @@ import matplotlib.pyplot as plt
 fig, ax = plt.subplots(2,1,figsize=(5, 6))
 ax=ax.flatten()
 
-ax[0].title.set_text('i) Mouse dataset 2')
+ax[0].title.set_text('b) Mouse dataset 2')
 
 pruned_repair, counts = np.unique(pruned_repair, return_counts=True)
 index = np.argsort(counts)[::-1]

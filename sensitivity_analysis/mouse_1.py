@@ -91,7 +91,7 @@ import matplotlib.pyplot as plt
 fig, ax = plt.subplots(2,1,figsize=(5, 6))
 ax=ax.flatten()
 
-ax[0].title.set_text('h) Mouse dataset 1')
+ax[0].title.set_text('a) Mouse dataset 1')
 
 pruned_repair, counts = np.unique(pruned_repair, return_counts=True)
 index = np.argsort(counts)[::-1]
@@ -120,7 +120,6 @@ plt.savefig('Mouse1_pruned.pdf')
 
 output_repair.to_csv('../figure_data/figure5_supplement4/mouse1_pruned_repair.csv')
 output_damage.to_csv('../figure_data/figure5_supplement4/mouse1_pruned_damage.csv')
-
 
 # create binary deficits from fractional
 new_male_deficits = []

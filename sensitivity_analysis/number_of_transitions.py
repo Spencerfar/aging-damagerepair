@@ -16,7 +16,7 @@ elsa_repair = pd.read_csv('../datasets/human_damage_deficits.csv', index_col=0)
 fig, ax = plt.subplots(1, 4, figsize=(8,2.5))
 ax=ax.flatten()
 
-ax[0].title.set_text('l) Mouse dataset 1')
+ax[0].title.set_text('e) Mouse dataset 1')
 
 
 deficits = enalapril_repair['deficit']
@@ -44,7 +44,7 @@ output_1.to_csv('../figure_data/figure5_supplement4/mouse1_repair_count.csv')
 ax[0].set_yticks([0,50,100,150])
 ax[0].set_yticklabels([0,50,100, 150], fontsize=6)
 
-ax[1].title.set_text('m) Mouse dataset 2')
+ax[1].title.set_text('f) Mouse dataset 2')
 
 
 deficits = exercise_repair['deficit']
@@ -72,7 +72,7 @@ ax[1].set_yticks([0,25,50,75])
 ax[1].set_yticklabels([0,25,50,75], fontsize=6)
 
 
-ax[2].title.set_text('n) Mouse dataset 3')
+ax[2].title.set_text('g) Mouse dataset 3')
 
 
 deficits = schultz_repair['deficit']
@@ -109,7 +109,7 @@ ax[0].set_ylabel('Repair counts', fontsize=7)
 
 
 
-ax[3].title.set_text('o) Human dataset')
+ax[3].title.set_text('h) Human dataset')
 
 
 deficits = elsa_repair['deficit']
