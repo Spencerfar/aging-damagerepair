@@ -37,7 +37,11 @@ def counting(data_raw, deficits, id_column, time_column, deaths = None, death_co
     new_cols_df = pd.DataFrame(np.ones((data.shape[0], len(new_cols)))*np.nan, columns = new_cols, index=data.index)
     data = pd.concat((data, new_cols_df), axis=1)
     
-    
+    deficit_values_list = np.zeros((data_raw.shape[0], len(deficits)))
+    repaired_all_list = np.zeros((data_raw.shape[0], len(deficits)))
+    damaged_all_list = np.zeros((data_raw.shape[0], len(deficits)))
+
+    curr_id = 0
     # go through each individual subject
     for label, group in data_raw.groupby([id_column]):
     
@@ -81,7 +85,15 @@ def counting(data_raw, deficits, id_column, time_column, deaths = None, death_co
         
         data.loc[data[id_column] == label, 'damage.count'] = damaged
         data.loc[data[id_column] == label, 'repair.count'] = repaired
-        
+
+
+        deficit_values_list[curr_id:curr_id+group.shape[0]] = deficit_values
+        repaired_all_list[curr_id:curr_id+group.shape[0]] = np.append(repaired_all[:,di],np.nan)
+        damaged_all_list[curr_id:curr_id+group.shape[0]] = np.append(repaired_all[:,di],np.nan)
+
+        curr_id = curr_id + group.shape[0]
+
+        """
         for di,d in enumerate(['d%d'%i for i in range(len(deficits))]):
             data.loc[data[id_column] == label, d] = deficit_values[:,di]
         
@@ -90,5 +102,14 @@ def counting(data_raw, deficits, id_column, time_column, deaths = None, death_co
         
         for di,d in enumerate(['d%d.d'%i for i in range(len(deficits))]):
             data.loc[data[id_column] == label, d] = np.append(damaged_all[:,di],np.nan)
+        """
+    for di,d in enumerate(['d%d'%i for i in range(len(deficits))]):
+        data[d] = deficit_values_list[:,di]
         
+    for di,d in enumerate(['d%d.r'%i for i in range(len(deficits))]):
+        data[d] = repaired_all_list[:,di]
+        
+    for di,d in enumerate(['d%d.d'%i for i in range(len(deficits))]):
+        data[d] = damaged_all_list[:,di]
+    
     return data
