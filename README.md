@@ -1,5 +1,5 @@
 # Damage and repair processes in aging
-Instead of simply measuring the health state as the count of binary health deficits as in a Frailty Index, we estimate damage and repair processes. Pre-print available at https://www.biorxiv.org/content/10.1101/2022.03.01.482443v1.
+Instead of simply measuring the health state as the count of binary health deficits as in a Frailty Index, we estimate damage and repair processes. Paper available at https://elifesciences.org/articles/77632.
 
 <p align="center"> 
 <img src="diagrams/transitions_schematic_combined.png" width="799" height="343">
@@ -66,7 +66,7 @@ matplotlib 3.5.2
 ```
 
 # Datasets
-Three different mice datasets are used, from https://doi.org/10.1093/gerona/gly219, https://doi.org/10.1093/gerona/glab297, and https://doi.org/10.1038/s41467-020-18446-0. Dataset 3 is freely available from https://github.com/SinclairLab/frailty. The authors of the other papers should be contacted to request access to mouse datasets 1 and 2.
+Three different mice datasets are used, from https://doi.org/10.1093/gerona/gly219, https://doi.org/10.1093/gerona/glab297, and https://doi.org/10.1038/s41467-020-18446-0. Dataset 3 is freely available from https://github.com/SinclairLab/frailty as the "Frailty data from Schultz_Kane_et_al.xlsx" file. The authors of the other papers should be contacted to request access to mouse datasets 1 and 2.
 
 Human data from the English Longitudinal Study of Aging are used, which can be accessed here https://www.elsa-project.ac.uk/accessing-elsa-data by registering. We use waves 1-9 from edition 31.
 
@@ -79,14 +79,19 @@ Running setup_demo.sh in demo/ will download and prepare mouse dataset 3 and sav
 Please cite if this is useful
 
 ```
-@article {Farrell2022,
-	author = {Farrell, S and Kane, AE and Bisset, E and Howlett, SE and Rutenberg, AD},
-	title = {Measurements of damage and repair in aging mice and humans reveals that robustness and resilience decrease with age, operate over broad timescales, and are affected differently by interventions},
-	elocation-id = {2022.03.01.482443},
-	year = {2022},
-	doi = {10.1101/2022.03.01.482443},
-	URL = {https://www.biorxiv.org/content/early/2022/03/03/2022.03.01.482443},
-	eprint = {https://www.biorxiv.org/content/early/2022/03/03/2022.03.01.482443.full.pdf},
-	journal = {bioRxiv}
+@article {Farrell2022elife,
+article_type = {journal},
+title = {Measurements of damage and repair of binary health attributes in aging mice and humans reveal that robustness and resilience decrease with age, operate over broad timescales, and are affected differently by interventions},
+author = {Farrell, Spencer and Kane, Alice E and Bisset, Elise and Howlett, Susan E and Rutenberg, Andrew David},
+volume = 11,
+year = 2022,
+month = {nov},
+pages = {e77632},
+citation = {eLife 2022;11:e77632},
+doi = {10.7554/eLife.77632},
+url = {https://doi.org/10.7554/eLife.77632},
+journal = {eLife},
+issn = {2050-084X},
+publisher = {eLife Sciences Publications, Ltd},
 }
 ```
